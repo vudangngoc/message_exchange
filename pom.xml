@@ -5,14 +5,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	  <groupId>com.creative</groupId>
   <artifactId>message_exchange</artifactId>
-  <packaging>jar</packaging>
-  <version>6.0.1</version>
+  <packaging>pom</packaging>
+  <version>0.0.1</version>
+  <modules>
+    <module>general_server</module>
+  </modules>
   <dependencies>
   <dependency>
 	<groupId>org.simpleframework</groupId>
 	<artifactId>simple</artifactId>
 	<version>4.1.21</version>
 </dependency>
-  
+
   </dependencies>
 </project>
