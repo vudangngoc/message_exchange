@@ -11,11 +11,7 @@
     <module>general_server</module>
   </modules>
   <dependencies>
-  <dependency>
-	<groupId>org.simpleframework</groupId>
-	<artifactId>simple</artifactId>
-	<version>4.1.21</version>
-</dependency>
+
 
   </dependencies>
 </project>

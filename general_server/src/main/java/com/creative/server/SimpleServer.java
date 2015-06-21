@@ -1,43 +1,32 @@
 package com.creative.server;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+
+import org.simpleframework.http.Request;
+import org.simpleframework.http.Response;
+import org.simpleframework.http.core.Container;
+import org.simpleframework.http.core.ContainerSocketProcessor;
+import org.simpleframework.transport.SocketProcessor;
+import org.simpleframework.transport.connect.Connection;
+import org.simpleframework.transport.connect.SocketConnection;
+
+import com.creative.disruptor.DisruptorHandle;
 
 
-public class SimpleServer implements GeneralServer {
+public class SimpleServer implements Container {
 
-	public boolean start() {
-		// TODO Auto-generated method stub
-		return false;
+	public static void main(String[] args) throws Exception{
+		Container container = new SimpleServer();
+		SocketProcessor server = new ContainerSocketProcessor(container);
+		Connection connection = new SocketConnection(server);
+		SocketAddress address = new InetSocketAddress(10001);
+		connection.connect(address);
 	}
-
-	public boolean stop() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public void bind(String hostName, long port) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public static void main(String[] args) {
-		org.simpleframework.transport.connect.SocketConnection s;
-		try {
-			ServerSocket serverSocket = new ServerSocket(10001);
-			StringWriter writer = new StringWriter();
-			while(true){
-				Socket clientSocket = serverSocket.accept();
-				
-				System.out.println("");
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+	
+	private DisruptorHandle disruptor = new DisruptorHandle();
+	
+	public void handle(Request request, Response response) {
+		this.disruptor.push(request, response);
 	}
 
 }
