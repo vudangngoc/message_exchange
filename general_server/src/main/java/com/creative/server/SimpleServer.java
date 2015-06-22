@@ -1,6 +1,9 @@
 package com.creative.server;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
@@ -11,6 +14,9 @@ import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 
 import com.creative.disruptor.DisruptorHandle;
+import com.creative.json.JsonData;
+import com.creative.service.EchoService;
+import com.creative.service.GeneralService;
 
 
 public class SimpleServer implements Container {
@@ -21,12 +27,32 @@ public class SimpleServer implements Container {
 		Connection connection = new SocketConnection(server);
 		SocketAddress address = new InetSocketAddress(10001);
 		connection.connect(address);
+		servicesPool.add(new EchoService());
 	}
-	
-	private DisruptorHandle disruptor = new DisruptorHandle();
-	
+	private static ArrayList<GeneralService> servicesPool = new ArrayList<GeneralService>();
 	public void handle(Request request, Response response) {
-		this.disruptor.push(request, response);
+		for(GeneralService service : servicesPool){
+			try {
+				JsonData data = new JsonData(request.getPath().getPath().substring(1));
+				service.processMessage(response.getPrintStream(), data);
+				response.getPrintStream().println(data.get("COMMAND"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			/*try {
+				
+				service.processMessage(response.getPrintStream(), data);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}*/
+		}
+		try {
+			response.getPrintStream().close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
