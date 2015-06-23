@@ -15,10 +15,6 @@ public abstract class GeneralService implements EventHandler<Context>{
 		disrupt.injectService(this);
 	}
 	protected DisruptorHandle disrupt = new DisruptorHandle();
-	public void processMessage(PrintStream client,IData data){
-		if (this.getMessageHandleList().contains(data.get("COMMAND"))){
-			this.disrupt.push(client,data);
-		}
-	}
+	public abstract boolean processMessage(PrintStream client,IData data);
 	protected abstract String getMessageHandleList();
 }

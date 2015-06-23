@@ -19,40 +19,20 @@ import com.creative.service.EchoService;
 import com.creative.service.GeneralService;
 
 
-public class SimpleServer implements Container {
+public class ExchangeServer implements Container {
 
 	public static void main(String[] args) throws Exception{
-		Container container = new SimpleServer();
+		Container container = new ExchangeServer();
 		SocketProcessor server = new ContainerSocketProcessor(container);
 		Connection connection = new SocketConnection(server);
 		SocketAddress address = new InetSocketAddress(10001);
 		connection.connect(address);
-		servicesPool.add(new EchoService());
 	}
-	private static ArrayList<GeneralService> servicesPool = new ArrayList<GeneralService>();
+	
 	public void handle(Request request, Response response) {
-		for(GeneralService service : servicesPool){
-			try {
-				JsonData data = new JsonData(request.getPath().getPath().substring(1));
-				service.processMessage(response.getPrintStream(), data);
-				response.getPrintStream().println(data.get("COMMAND"));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			/*try {
-				
-				service.processMessage(response.getPrintStream(), data);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}*/
-		}
-		try {
-			response.getPrintStream().close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		boolean handled = false;
+		request.getChannel().getWriter();
+
 	}
 
 }

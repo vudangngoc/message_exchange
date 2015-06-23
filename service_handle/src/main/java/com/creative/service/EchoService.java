@@ -1,6 +1,9 @@
 package com.creative.service;
 
+import java.io.PrintStream;
+
 import com.creative.context.Context;
+import com.creative.context.IData;
 
 public class EchoService extends GeneralService {
 	public EchoService(){
@@ -15,6 +18,14 @@ public class EchoService extends GeneralService {
 	@Override
 	protected String getMessageHandleList() {
 		return "ECHO";
+	}
+	@Override
+	public boolean processMessage(PrintStream client, IData data) {
+		if ("ECHO".equals(data.get("COMMAND"))){
+			this.disrupt.push(client,data);
+			return true;
+		}
+		return false;
 	}
 
 }
