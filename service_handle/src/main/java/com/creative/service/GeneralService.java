@@ -14,6 +14,10 @@ public abstract class GeneralService implements EventHandler<Context>{
 	public GeneralService(){
 		disrupt.injectService(this);
 	}
+	public static final String COMMAND = "COMMAND";
+	public static final String DATA = "DATA";
+	public static final String FROM = "FROM";
+	public static final String TO = "TO";
 	protected DisruptorHandle disrupt = new DisruptorHandle();
 	public abstract boolean processMessage(PrintStream client,IData data);
 	protected abstract String getMessageHandleList();
