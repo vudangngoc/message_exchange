@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.creative.context.Context;
 import com.creative.context.IData;
+import com.creative.disruptor.DisruptorHandle;
 
 public class ExchangeMessageService extends GeneralService {
 
@@ -13,11 +14,11 @@ public class ExchangeMessageService extends GeneralService {
 		String command = event.getData().get(GeneralService.COMMAND);
 		String result = "";
 		switch(command){
-		case "SEND":
-			messageList.put(event.getData().get(GeneralService.TO), event.getData().get(GeneralService.DATA));
+		case "MESSAGE_SEND":
+			messageList.put(event.getData().get(GeneralService.TO), event.getData().toString());
 			result = "OK";
 			break;
-		case "GET":
+		case "MESSAGE_GET":
 			result = messageList.put(event.getData().get(GeneralService.TO),"");			
 			break;
 		}
@@ -25,24 +26,18 @@ public class ExchangeMessageService extends GeneralService {
 		event.getClient().close();
 	}
 	ConcurrentHashMap <String,String> messageList = new ConcurrentHashMap<String, String>();
-	@Override
-	public boolean processMessage(PrintStream client, IData data) {
-		try{
-			if(!"".equals(data.get(GeneralService.TO))){
-				this.disrupt.push(client, data);
-				return true;
-			}
-		}
-		catch(Exception e){
-			
-		}
-		return false;
-	}
+	private DisruptorHandle disrupt;
 
 	@Override
 	protected String getMessageHandleList() {
 		// TODO Auto-generated method stub
-		return null;
+		return "MESSAGE_SEND,MESSAGE_GET";
+	}
+
+	@Override
+	protected DisruptorHandle getDisruptorHandle() {
+		if(disrupt == null) disrupt = new DisruptorHandle(512);
+		return disrupt;
 	}
 
 }

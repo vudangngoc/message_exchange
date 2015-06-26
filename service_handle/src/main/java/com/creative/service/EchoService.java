@@ -4,8 +4,10 @@ import java.io.PrintStream;
 
 import com.creative.context.Context;
 import com.creative.context.IData;
+import com.creative.disruptor.DisruptorHandle;
 
 public class EchoService extends GeneralService {
+	private DisruptorHandle disrupt;
 	public EchoService(){
 		super();
 	}
@@ -19,13 +21,11 @@ public class EchoService extends GeneralService {
 	protected String getMessageHandleList() {
 		return "ECHO";
 	}
+	
 	@Override
-	public boolean processMessage(PrintStream client, IData data) {
-		if ("ECHO".equals(data.get("COMMAND"))){
-			this.disrupt.push(client,data);
-			return true;
-		}
-		return false;
+	protected DisruptorHandle getDisruptorHandle() {
+		if(disrupt == null) disrupt = new DisruptorHandle(512);
+		return disrupt;
 	}
 
 }
