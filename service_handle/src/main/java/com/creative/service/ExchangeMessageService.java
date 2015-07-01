@@ -1,10 +1,8 @@
 package com.creative.service;
 
-import java.io.PrintStream;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.creative.context.Context;
-import com.creative.context.IData;
 import com.creative.disruptor.DisruptorHandle;
 
 public class ExchangeMessageService extends GeneralService {
@@ -15,10 +13,12 @@ public class ExchangeMessageService extends GeneralService {
 		String result = "";
 		switch(command){
 		case "MESSAGE_SEND":
+		case "STATE_SET":
 			messageList.put(event.getData().get(GeneralService.TO), event.getData().toString());
 			result = "OK";
 			break;
 		case "MESSAGE_GET":
+		case "STATE_GET":
 			result = messageList.put(event.getData().get(GeneralService.TO),"");			
 			break;
 		}
@@ -31,7 +31,7 @@ public class ExchangeMessageService extends GeneralService {
 	@Override
 	protected String getMessageHandleList() {
 		// TODO Auto-generated method stub
-		return "MESSAGE_SEND,MESSAGE_GET";
+		return "MESSAGE_SEND,MESSAGE_GET,STATE_SET,STATE_GET";
 	}
 
 	@Override

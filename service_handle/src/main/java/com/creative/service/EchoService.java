@@ -1,9 +1,6 @@
 package com.creative.service;
 
-import java.io.PrintStream;
-
 import com.creative.context.Context;
-import com.creative.context.IData;
 import com.creative.disruptor.DisruptorHandle;
 
 public class EchoService extends GeneralService {
