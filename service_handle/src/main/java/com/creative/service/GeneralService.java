@@ -17,7 +17,7 @@ public abstract class GeneralService implements EventHandler<Context>{
 	protected abstract DisruptorHandle getDisruptorHandle();
 	public boolean processMessage(PrintStream client,IData data) {
 		try{
-			if(getMessageHandleList().contains(data.get(GeneralService.COMMAND))){
+			if(canHandle(data.get(GeneralService.COMMAND))){
 				getDisruptorHandle().push(client, data);
 				return true;
 			}
@@ -25,5 +25,5 @@ public abstract class GeneralService implements EventHandler<Context>{
 		catch(Exception e){}
 		return false;
 	}
-	protected abstract String getMessageHandleList();
+	protected abstract boolean canHandle(String command);
 }

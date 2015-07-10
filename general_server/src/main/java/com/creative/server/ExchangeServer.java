@@ -13,34 +13,49 @@ import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 
 import com.creative.json.JsonData;
-import com.creative.service.EchoService;
+import com.creative.service.HTTPService;
 import com.creative.service.ExchangeMessageService;
 import com.creative.service.GeneralService;
 
 
 public class ExchangeServer implements Container {
 
+	private static HTTPService httpService;
 	public static void main(String[] args) throws Exception{
 		Container container = new ExchangeServer();
 		SocketProcessor server = new ContainerSocketProcessor(container);
 		Connection connection = new SocketConnection(server);
 		SocketAddress address = new InetSocketAddress(10001);
 		connection.connect(address);
-		servicesPool.add(new EchoService());
 		servicesPool.add(new ExchangeMessageService());
+		ExchangeServer.httpService = new HTTPService();
 	}
 	private static ArrayList<GeneralService> servicesPool = new ArrayList<GeneralService>();
 	public void handle(Request request, Response response) {
-		boolean handled = false;
-		for(GeneralService service : servicesPool){
+		System.out.println(request.getPath().getPath());
+		boolean handled = false;		
+		JsonData data;
+		try{
+			data = new JsonData(request.getPath().getPath().substring(1));
+		}catch(Exception e){
 			try {
-				JsonData data = new JsonData(request.getPath().getPath().substring(1));
-				if(service.processMessage(response.getPrintStream(), data)) handled = true;
+				ExchangeServer.httpService.onMessage(response.getPrintStream(),request.getPath().getPath());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			return;
+		}
+
+		for(GeneralService service : servicesPool){
+			try { 
+				if(service.processMessage(response.getPrintStream(), data)) 
+					handled = true;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		
 		if(!handled) {
 			try {
 				response.getPrintStream().println("Error 404: Unknow request!");
@@ -49,8 +64,6 @@ public class ExchangeServer implements Container {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 		}
 	}
-
 }

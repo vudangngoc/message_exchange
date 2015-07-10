@@ -12,14 +12,12 @@ public class ExchangeMessageService extends GeneralService {
 		String command = event.getData().get(GeneralService.COMMAND);
 		String result = "";
 		switch(command){
-		case "MESSAGE_SEND":
-		case "STATE_SET":
+		case "MESSAGE_GET":
+			result = messageList.get(event.getData().get(GeneralService.TO));			
+			break;
+		default:
 			messageList.put(event.getData().get(GeneralService.TO), event.getData().toString());
 			result = "OK";
-			break;
-		case "MESSAGE_GET":
-		case "STATE_GET":
-			result = messageList.put(event.getData().get(GeneralService.TO),"");			
 			break;
 		}
 		event.getClient().print(result);
@@ -29,9 +27,8 @@ public class ExchangeMessageService extends GeneralService {
 	private DisruptorHandle disrupt;
 
 	@Override
-	protected String getMessageHandleList() {
-		// TODO Auto-generated method stub
-		return "MESSAGE_SEND,MESSAGE_GET,STATE_SET,STATE_GET";
+	protected boolean canHandle(String command) {
+		return true;
 	}
 
 	@Override
@@ -39,5 +36,4 @@ public class ExchangeMessageService extends GeneralService {
 		if(disrupt == null) disrupt = new DisruptorHandle(512);
 		return disrupt;
 	}
-
 }

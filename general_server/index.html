@@ -1,0 +1,24 @@
+<html>
+<head>
+<script type="text/javascript">
+function sendMessage(){
+	request = '%7BECHO,FROM:def,TO:ghi,DATA:ghi'
+	request += 'COMMAND:' + document.getElementById("command").value + ','
+	request += 'FROM:' + document.getElementById("command").value + ','
+	request += 'TO:' + document.getElementById("command").value + ','
+	request += 'DATA:' + document.getElementById("command").value
+	request += '%7D'
+}
+</script>
+
+</head>
+<body>
+<div>
+<div style="height:auto;width:30%;">From:</div><div style="height:auto;width:700%;"><input type="text" name="from"></div>
+<div style="height:auto;width:30%;">To:</div><div style="height:auto;width:700%;"><input type="text" name="to"></div>
+<div style="height:auto;width:30%;">Command:</div><div style="height:auto;width:700%;"><input type="text" name="command"></div>
+<div style="height:auto;width:30%;">Data:</div><div style="height:auto;width:700%;"><input type="text" name="data"></div>
+</div>
+<input type="submit" onclick="sendMessage()" value="Submit">
+</body>
+</html>
