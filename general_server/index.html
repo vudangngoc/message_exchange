@@ -9,8 +9,9 @@ function sendMessage(){
 	request += 'DATA:' + document.getElementById("data").value
 	request += '%7D'
 	var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", request, false );
-    xmlHttp.send( null );
+    xmlHttp.open( "GET", request, true );
+    xmlHttp.send(  );
+    alert(request)
     document.getElementById("result").value = xmlHttp.responseText;
 }
 </script>
