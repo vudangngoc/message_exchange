@@ -2,12 +2,16 @@
 <head>
 <script type="text/javascript">
 function sendMessage(){
-	request = '%7BECHO,FROM:def,TO:ghi,DATA:ghi'
+	request = 'http://thietbithongminh.info:10001/%7B'
 	request += 'COMMAND:' + document.getElementById("command").value + ','
-	request += 'FROM:' + document.getElementById("command").value + ','
-	request += 'TO:' + document.getElementById("command").value + ','
-	request += 'DATA:' + document.getElementById("command").value
+	request += 'FROM:' + document.getElementById("from").value + ','
+	request += 'TO:' + document.getElementById("to").value + ','
+	request += 'DATA:' + document.getElementById("data").value
 	request += '%7D'
+	var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", request, false );
+    xmlHttp.send( null );
+    document.getElementById("result").value = xmlHttp.responseText;
 }
 </script>
 
@@ -20,5 +24,6 @@ function sendMessage(){
 <div style="height:auto;width:30%;">Data:</div><div style="height:auto;width:700%;"><input type="text" name="data"></div>
 </div>
 <input type="submit" onclick="sendMessage()" value="Submit">
+<div id="result"></div>
 </body>
 </html>
