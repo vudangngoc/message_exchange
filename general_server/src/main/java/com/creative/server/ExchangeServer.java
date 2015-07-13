@@ -14,7 +14,7 @@ import org.simpleframework.transport.connect.SocketConnection;
 
 import com.creative.json.JsonData;
 import com.creative.service.HTTPService;
-import com.creative.service.ExchangeMessageService;
+import com.creative.service.StateService;
 import com.creative.service.GeneralService;
 
 
@@ -27,7 +27,7 @@ public class ExchangeServer implements Container {
 		Connection connection = new SocketConnection(server);
 		SocketAddress address = new InetSocketAddress(10001);
 		connection.connect(address);
-		servicesPool.add(new ExchangeMessageService());
+		servicesPool.add(new StateService());
 		ExchangeServer.httpService = new HTTPService();
 	}
 	private static ArrayList<GeneralService> servicesPool = new ArrayList<GeneralService>();

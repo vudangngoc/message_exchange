@@ -5,14 +5,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.creative.context.Context;
 import com.creative.disruptor.DisruptorHandle;
 
-public class ExchangeMessageService extends GeneralService {
+public class StateService extends GeneralService {
 
 	public void onEvent(Context event, long sequence, boolean endOfBatch)
 			throws Exception {
 		String command = event.getData().get(GeneralService.COMMAND);
 		String result = "";
 		switch(command){
-		case "MESSAGE_GET":
+		case "STATE_GET":
 			result = messageList.get(event.getData().get(GeneralService.TO));			
 			break;
 		default:
@@ -28,7 +28,7 @@ public class ExchangeMessageService extends GeneralService {
 
 	@Override
 	protected boolean canHandle(String command) {
-		return true;
+		return command.startsWith("STATE_");
 	}
 
 	@Override
