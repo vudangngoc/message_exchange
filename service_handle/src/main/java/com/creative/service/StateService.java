@@ -13,7 +13,7 @@ public class StateService extends GeneralService {
 		String result = "";
 		switch(command){
 		case "STATE_GET":
-			result = messageList.get(event.getData().get(GeneralService.TO));			
+			result = messageList.get(event.getData().get(GeneralService.FROM));			
 			break;
 		default:
 			messageList.put(event.getData().get(GeneralService.TO), event.getData().toString());
