@@ -2,7 +2,10 @@ package com.creative.server;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
@@ -21,7 +24,9 @@ import com.creative.service.GeneralService;
 public class ExchangeServer implements Container {
 
 	private static HTTPService httpService;
+	private static DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	public static void main(String[] args) throws Exception{
+		
 		Container container = new ExchangeServer();
 		SocketProcessor server = new ContainerSocketProcessor(container);
 		Connection connection = new SocketConnection(server);
@@ -32,7 +37,8 @@ public class ExchangeServer implements Container {
 	}
 	private static ArrayList<GeneralService> servicesPool = new ArrayList<GeneralService>();
 	public void handle(Request request, Response response) {
-		System.out.println(request.getPath().getPath());
+		Calendar now = Calendar.getInstance();
+		System.out.println(dateFormat.format(now.getTime())+";"+request.getPath().getPath());
 		boolean handled = false;		
 		JsonData data;
 		try{
