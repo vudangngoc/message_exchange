@@ -6,7 +6,7 @@
 		<groupId>com.creative</groupId>
 		<version>0.0.1</version>
 	</parent>
-	<artifactId>service_handle</artifactId>
+	<artifactId>service_state</artifactId>
 	<packaging>jar</packaging>
 	<dependencyManagement>
 
@@ -16,6 +16,17 @@
 			<groupId>com.lmax</groupId>
 			<artifactId>disruptor</artifactId>
 			<version>3.3.2</version>
+		</dependency>
+		<dependency>
+	<groupId>org.luaj</groupId>
+	<artifactId>luaj-jse</artifactId>
+	<version>3.0.1</version>
+</dependency>
+
+		<dependency>
+			<groupId>com.creative</groupId>
+			<artifactId>service_base</artifactId>
+			<version>0.0.1</version>
 		</dependency>
 	</dependencies>
 </project>

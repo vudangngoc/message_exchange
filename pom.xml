@@ -10,7 +10,8 @@
   <modules>
     <module>general_server</module>
 	<module>crypto</module>
-	<module>service_handle</module>
+	<module>service_base</module>
+	<module>service_state</module>
   </modules>
   <dependencies>
 

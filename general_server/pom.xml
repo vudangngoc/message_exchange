@@ -14,7 +14,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.creative</groupId>
-			<artifactId>service_handle</artifactId>
+			<artifactId>service_state</artifactId>
 			<version>0.0.1</version>
 		</dependency>
 		<dependency>
