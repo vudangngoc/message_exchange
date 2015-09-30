@@ -15,9 +15,8 @@ import com.lmax.disruptor.dsl.Disruptor;
 public class DisruptorHandler {
 	public DisruptorHandler(int ringSize){
 		this.exec = Executors.newCachedThreadPool();
-		// Preallocate RingBuffer with 1024 ValueEvents
 		this.disruptor = new Disruptor<Context>(Context.EVENT_FACTORY, ringSize, exec);
-
+		System.out.println("Init Disruptor with " + ringSize + " slot(s)");
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -35,6 +34,7 @@ public class DisruptorHandler {
 	}
 	public boolean startDisruptor(){
 		this.ringBuffer = disruptor.start();
+		System.out.println("Disruptor started");
 		return false;
 	}
 	public void stopDisruptor(){

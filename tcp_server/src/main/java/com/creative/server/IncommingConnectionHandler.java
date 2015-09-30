@@ -13,26 +13,38 @@ import com.creative.service.StateService;
 public class IncommingConnectionHandler extends Thread{
 	private Socket socket;
 	private GeneralService service;
+	private JsonData data = new JsonData("{}");
 	public IncommingConnectionHandler(Socket socket,GeneralService service){
 		this.socket = socket;
 		this.service = service;
 	}
-
+	
 	public void run(){
-		while(true)
 		try {
 			BufferedReader inBuffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			
-			String message = inBuffer.readLine();
-			if(service.processMessage(socket, new JsonData(message))){
-				System.out.println("Received: " + message);
-			} else{
-				System.out.println("Cannot handle: " + message);
+			String message;
+			while(true){
+				message = inBuffer.readLine();
+				if(message != null && data.setData(message)){
+					if(service.processMessage(socket, data)){
+						System.out.println("Received: " + message);
+					} else{
+						System.out.println("Cannot handle: " + message);
+					}
+				}else{
+					System.out.println("Syntax error: " + message);
+				}
 			}
-			//if(outStream != null) outStream.writeBytes(message);  
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally{
+			if(!socket.isClosed())
+				try {
+					socket.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 		}
-	}
 
+	}
 }

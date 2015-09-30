@@ -22,10 +22,13 @@ public class StateService extends GeneralService {
 			result = "OK";
 			break;
 		}
+		
 		DataOutputStream outStream = new DataOutputStream(event.getClient().getOutputStream());
-		outStream.writeBytes(result);
-		outStream.flush();
-		//event.getClient().close();
+		if(outStream != null){
+			outStream.writeBytes(result == null ? "" : result);
+			outStream.flush();
+			//event.getClient().close();
+		}
 	}
 	ConcurrentHashMap <String,String> messageList = new ConcurrentHashMap<String, String>();
 	private DisruptorHandler disrupt;
