@@ -6,12 +6,13 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.creative.crypto.EncryptString;
 import com.creative.crypto.StringXORer;
 
 public class TestStringXORer {
 	@Test
 	public void testEncrypt(){
-		StringXORer test = new StringXORer();
+		EncryptString test = new StringXORer();
 		UUID uuid = UUID.randomUUID();
 		String content = "{COMMAND:STATE_GET,FROM:esp7_1@demo,TO:nil,DATA:NA}";
 		String key = uuid.toString();

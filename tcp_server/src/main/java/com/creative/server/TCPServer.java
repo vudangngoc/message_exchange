@@ -9,13 +9,12 @@ import com.creative.service.StateService;
 public class TCPServer {
 
 	public static void main(String[] args) {
-		GeneralService service = new StateService();
 		try {
 			ServerSocket listenSocket = new ServerSocket(10001);
 			System.out.println("Start server");
 			while(true){             
 				Socket clientSocket = listenSocket.accept();
-				IncommingConnectionHandler handler = new IncommingConnectionHandler(clientSocket,service);
+				ClientHandler handler = new ClientHandler(clientSocket);
 				handler.run();
 			}
 		}catch(Exception e){}

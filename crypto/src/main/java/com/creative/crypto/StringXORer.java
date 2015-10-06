@@ -7,13 +7,21 @@ import java.io.IOException;
  * http://stackoverflow.com/questions/5126616/xor-operation-with-two-strings-in-java/7983531#7983531
  *
  */
-public class StringXORer {
+public class StringXORer implements EncryptString {
 
-    public String encode(String s, String key) {
+    /* (non-Javadoc)
+	 * @see com.creative.crypto.EncryptString#encode(java.lang.String, java.lang.String)
+	 */
+    @Override
+	public String encode(String s, String key) {
         return base64Encode(xorWithKey(s.getBytes(), key.getBytes()));
     }
 
-    public String decode(String s, String key) {
+    /* (non-Javadoc)
+	 * @see com.creative.crypto.EncryptString#decode(java.lang.String, java.lang.String)
+	 */
+    @Override
+	public String decode(String s, String key) {
         return new String(xorWithKey(base64Decode(s), key.getBytes()));
     }
 
