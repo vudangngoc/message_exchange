@@ -12,7 +12,12 @@ public class Context {
 	public Context(){}
 	public Context(Socket client, String message) {
 		this.client = client;
-		this.data = new JsonData(message);
+		try {
+
+			this.data = new JsonData(message);
+		} catch(Exception e) {
+			this.data = new JsonData("{}");
+		}
 	}
 	public Socket getClient() {
 		return client;
