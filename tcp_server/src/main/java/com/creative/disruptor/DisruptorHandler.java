@@ -8,35 +8,43 @@ import com.creative.context.Context;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
+import org.apache.log4j.Logger;
 
 public class DisruptorHandler {
 	public DisruptorHandler(int ringSize){
 		this.exec = Executors.newCachedThreadPool();
 		this.disruptor = new Disruptor<DisruptorEvent>(DisruptorEvent.EVENT_FACTORY, ringSize, exec);
-		System.out.println("Init Disruptor with " + ringSize + " slot(s)");
+							if(logger.isInfoEnabled()){
+			logger.info("Init Disruptor with " + ringSize + " slot(s)");
+		}
 	}
-	
+	final static Logger logger = Logger.getLogger(DisruptorHandler.class);
 	@SuppressWarnings("unchecked")
 	public void injectServices(EventHandler<DisruptorEvent> service){
 		if(service == null) return;
 		disruptor.handleEventsWith(service);
 	}
 	@SuppressWarnings("unchecked")
-	public void injectServices(List<EventHandler<DisruptorEvent>> services){		
+	public void injectServices(List<EventHandler<DisruptorEvent>> services){
 		if(services.size() == 0) return;
 		disruptor.handleEventsWith(services.get(0));
-		if(services.size() > 1) 
+		if(services.size() > 1)
 			for(int i = 1; i < services.size(); i++)
-				disruptor.after(services.get(i - 1)).handleEventsWith(services.get(i));		
+				disruptor.after(services.get(i - 1)).handleEventsWith(services.get(i));
 	}
 	public boolean startDisruptor(){
 		this.ringBuffer = disruptor.start();
-		System.out.println("Disruptor started");
+									if(logger.isInfoEnabled()){
+			logger.info("Disruptor started");
+		}
 		return false;
 	}
 	public void stopDisruptor(){
 		disruptor.shutdown();
 		exec.shutdown();
+		if(logger.isInfoEnabled()){
+			logger.info("Disruptor stopped");
+		}
 	}
 	public void push(Context data){
 		long sequence = ringBuffer.next();

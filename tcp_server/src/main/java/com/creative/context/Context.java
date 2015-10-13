@@ -6,8 +6,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import com.lmax.disruptor.EventFactory;
+import org.apache.log4j.Logger;
 
 public class Context {
+	final static Logger logger = Logger.getLogger(Context.class);
 	private Socket client;
 	public Context(){}
 	public Context(Socket client, String message) {
@@ -37,7 +39,9 @@ public class Context {
 			}
 			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
+		if(logger.isDebugEnabled()){
+	    logger.debug(e);
+			}
 			return false;
 		}
 
