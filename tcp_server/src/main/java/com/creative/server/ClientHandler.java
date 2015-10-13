@@ -10,8 +10,12 @@ import com.creative.disruptor.DisruptorHandler;
 import com.creative.disruptor.MortalHandler;
 import com.creative.service.GeneralService;
 import com.creative.service.StateService;
+import org.apache.log4j.Logger;
 
 public class ClientHandler extends Thread{
+
+	final static Logger logger = Logger.getLogger(ClientHandler.class);
+
 	private Socket socket;
 
 	public ClientHandler(Socket socket){
@@ -26,8 +30,10 @@ public class ClientHandler extends Thread{
 				disrupt.injectServices(new MortalHandler(StateService.class, 10000));
 				disrupt.startDisruptor();
 			} catch (InstantiationException | IllegalAccessException e) {
-				e.printStackTrace();
-			}			
+				if(logger.isDebugEnabled()){
+	    logger.debug(e);
+			}
+			}
 		}
 		return disrupt;
 	}
@@ -41,7 +47,9 @@ public class ClientHandler extends Thread{
 				message = inBuffer.readLine();
 				if(message != null && ClientHandler.getDisruptorHandler() != null){
 					ClientHandler.getDisruptorHandler().push(new Context(socket, message));
-					System.out.println("Received: " + message);
+					if(logger.isInfoEnabled()){
+			logger.info("Received: " + message);
+		}
 				}
 			}
 		}catch (IOException e) {

@@ -15,6 +15,7 @@ public class Context {
 		try {
 
 			this.data = new JsonData(message);
+
 		} catch(Exception e) {
 			this.data = new JsonData("{}");
 		}
