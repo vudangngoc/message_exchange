@@ -26,7 +26,7 @@ public class ClientHandler extends Thread{
 	private static DisruptorHandler disrupt;
 	protected static DisruptorHandler getDisruptorHandler() {
 		if(disrupt == null) {
-			disrupt = new DisruptorHandler(512);
+			disrupt = new DisruptorHandler(Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.RING_BUFFER_SIZE)));
 			try {
 				disrupt.injectServices(new MortalHandler(StateService.class,
 																Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.WORKER_LIFE_TIME))));
