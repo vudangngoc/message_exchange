@@ -43,7 +43,16 @@ public class Context {
 	    logger.debug(e);
 			}
 			return false;
-		}
+		}finally{
+			if(!client.isClosed())
+			try {
+				client.close();
+			} catch (IOException e) {
+				if(logger.isDebugEnabled()){
+					logger.debug(e);
+				}
+			}
+	}
 
 
 	}

@@ -8,7 +8,6 @@ import java.net.Socket;
 import com.creative.context.Context;
 import com.creative.disruptor.DisruptorHandler;
 import com.creative.disruptor.MortalHandler;
-import com.creative.service.GeneralService;
 import com.creative.service.StateService;
 import com.creative.GlobalConfig;
 import org.apache.log4j.Logger;
@@ -29,12 +28,12 @@ public class ClientHandler extends Thread{
 			disrupt = new DisruptorHandler(Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.RING_BUFFER_SIZE)));
 			try {
 				disrupt.injectServices(new MortalHandler(StateService.class,
-																Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.WORKER_LIFE_TIME))));
+						Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.WORKER_LIFE_TIME))));
 				disrupt.startDisruptor();
 			} catch (InstantiationException | IllegalAccessException e) {
 				if(logger.isDebugEnabled()){
-	    logger.debug(e);
-			}
+					logger.debug(e);
+				}
 			}
 		}
 		return disrupt;
@@ -44,29 +43,28 @@ public class ClientHandler extends Thread{
 		try {
 			BufferedReader inBuffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			String message;
-			while(true){
-				if(socket.isClosed() || inBuffer == null) break;
-				message = inBuffer.readLine();
-				if(message != null && ClientHandler.getDisruptorHandler() != null){
-					ClientHandler.getDisruptorHandler().push(new Context(socket, message));
-					if(logger.isInfoEnabled()){
-			logger.info("Received: " + message);
-		}
+			if(socket.isClosed() || inBuffer == null) return;
+			message = inBuffer.readLine();
+			if(message != null && ClientHandler.getDisruptorHandler() != null){
+				ClientHandler.getDisruptorHandler().push(new Context(socket, message));
+				if(logger.isInfoEnabled()){
+					logger.info("Received: " + message);
 				}
 			}
+
 		}catch (IOException e) {
-							if(logger.isDebugEnabled()){
-	    logger.debug(e);
+			if(logger.isDebugEnabled()){
+				logger.debug(e);
 			}
 		}finally{
-			if(!socket.isClosed())
-				try {
-					socket.close();
-				} catch (IOException e) {
-									if(logger.isDebugEnabled()){
-	    logger.debug(e);
-			}
-				}
+//			if(!socket.isClosed())
+//				try {
+//					socket.close();
+//				} catch (IOException e) {
+//					if(logger.isDebugEnabled()){
+//						logger.debug(e);
+//					}
+//				}
 		}
 
 	}
