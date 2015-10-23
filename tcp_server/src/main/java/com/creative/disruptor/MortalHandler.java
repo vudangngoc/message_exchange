@@ -2,6 +2,8 @@ package com.creative.disruptor;
 
 
 import org.apache.log4j.Logger;
+
+import com.creative.service.GeneralService;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.WorkHandler;
 
@@ -43,5 +45,10 @@ public class MortalHandler implements EventHandler<DisruptorEvent> {
 	public void onEvent(DisruptorEvent event, long sequence, boolean endOfBatch) throws Exception {
 		handler.onEvent(event);
 		this.ReduceLifeTime();
+	}
+	public boolean canHandle(String command){
+		if(handler instanceof GeneralService)
+			return ((GeneralService)handler).canHandle(command);
+		else return false;
 	}
 }

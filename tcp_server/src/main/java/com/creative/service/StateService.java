@@ -11,7 +11,6 @@ public class StateService implements GeneralService {
 	}
 	ConcurrentHashMap <String,String> messageList = new ConcurrentHashMap<String, String>();
 
-	@Override
 	public boolean canHandle(String command) {
 		if(command == null || "".equals(command)) return false;
 		return command.startsWith("STATE_");

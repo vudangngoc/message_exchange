@@ -5,7 +5,6 @@ package com.creative.context;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import com.lmax.disruptor.EventFactory;
 import org.apache.log4j.Logger;
 
 public class Context {
@@ -30,30 +29,24 @@ public class Context {
 		return data;
 	}
 	public boolean setResponse(String response){
+		boolean result = false;
 		DataOutputStream outStream;
 		try {
 			outStream = new DataOutputStream(client.getOutputStream());
 			if(outStream != null){
 				outStream.writeBytes(response == null ? "" : response);
-				outStream.flush();
+				outStream.close();
+				result = true;
 			}
-			return true;
 		} catch (IOException e) {
-		if(logger.isDebugEnabled()){
-	    logger.debug(e);
-			}
-			return false;
-		}finally{
-			if(!client.isClosed())
+				logger.debug(e);
+		}
+		if(!client.isClosed())
 			try {
 				client.close();
 			} catch (IOException e) {
-				if(logger.isDebugEnabled()){
 					logger.debug(e);
-				}
 			}
-	}
-
-
+		return result;
 	}
 }
