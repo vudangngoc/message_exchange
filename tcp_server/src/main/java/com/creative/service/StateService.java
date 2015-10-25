@@ -33,9 +33,10 @@ public class StateService implements GeneralService {
 			break;
 		default:
 			messageList.put(context.getRequest().get(GeneralService.TO), context.getRequest().toString());
-			result = "OK";
+			result = "{STATE:OK}";
 			break;
 		}
+		if(result == null || "".equals(result)) result = "{COMMAND:STATE_SET;FROM:nil;TO:"+ context.getRequest().get(GeneralService.FROM) +";DATA:nil}";
 		context.setResponse(result);
 
 	}
