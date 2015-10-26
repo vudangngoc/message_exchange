@@ -31,7 +31,13 @@ public class StateService implements GeneralService {
 		case "STATE_GET":
 			result = messageList.get(context.getRequest().get(GeneralService.FROM));
 			break;
-		default:
+		case "STATE_INFO":
+			result = getInfo();
+			break;
+		case "STATE_STATUS":
+			result = getStatus();
+			break;
+		case "STATE_SET":
 			messageList.put(context.getRequest().get(GeneralService.TO), context.getRequest().toString());
 			result = "{STATE:OK}";
 			break;
@@ -39,5 +45,15 @@ public class StateService implements GeneralService {
 		if(result == null || "".equals(result)) result = "{COMMAND:STATE_SET;FROM:nil;TO:"+ context.getRequest().get(GeneralService.FROM) +";DATA:nil}";
 		context.setResponse(result);
 
+	}
+
+	private String getStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String getInfo() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
