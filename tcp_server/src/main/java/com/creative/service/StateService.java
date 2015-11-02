@@ -47,12 +47,14 @@ public class StateService implements GeneralService {
 
 	}
 
-	private String getStatus() {
+	@Override
+	public String getStatus() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private String getInfo() {
+	@Override
+	public String getInfo() {
 		// TODO Auto-generated method stub
 		return null;
 	}

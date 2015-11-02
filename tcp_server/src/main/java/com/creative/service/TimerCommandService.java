@@ -39,4 +39,16 @@ public class TimerCommandService implements GeneralService {
 			
 		}
 	}
+
+	@Override
+	public String getStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getInfo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
