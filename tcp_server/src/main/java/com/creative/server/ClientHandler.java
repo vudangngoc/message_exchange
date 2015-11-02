@@ -26,7 +26,7 @@ public class ClientHandler extends Thread{
 		this.socket = socket;
 	}
 
-	private static DisruptorHandler disrupt;
+	public static DisruptorHandler disrupt;
 	private static List<MortalHandler> services = new ArrayList<MortalHandler>();
 	protected static DisruptorHandler getDisruptorHandler() {
 		if(disrupt == null) {

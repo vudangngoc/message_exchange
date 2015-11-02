@@ -29,6 +29,7 @@ public class Context {
 		return data;
 	}
 	public boolean setResponse(String response){
+		if(client == null) return false;
 		boolean result = false;
 		DataOutputStream outStream;
 		try {
