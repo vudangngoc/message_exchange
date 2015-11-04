@@ -9,6 +9,10 @@ import org.json.JSONException;
 public class StateService implements GeneralService {
 	public StateService(){
 	}
+	
+	public static final String DATA = "DATA";
+	
+
 	ConcurrentHashMap <String,String> messageList = new ConcurrentHashMap<String, String>();
 
 	public boolean canHandle(String command) {
@@ -21,7 +25,7 @@ public class StateService implements GeneralService {
 		Context context = event.context;
 		String command;
 		try{
-			command = context.getRequest().get(GeneralService.COMMAND);
+			command = context.getRequest().get(COMMAND);
 		}catch(JSONException e){
 			return;
 		}
@@ -29,7 +33,7 @@ public class StateService implements GeneralService {
 		String result = "";
 		switch(command){
 		case "STATE_GET":
-			result = messageList.get(context.getRequest().get(GeneralService.FROM));
+			result = messageList.get(context.getRequest().get(FROM));
 			break;
 		case "STATE_INFO":
 			result = getInfo();
@@ -38,11 +42,11 @@ public class StateService implements GeneralService {
 			result = getStatus();
 			break;
 		case "STATE_SET":
-			messageList.put(context.getRequest().get(GeneralService.TO), context.getRequest().toString());
+			messageList.put(context.getRequest().get(TO), context.getRequest().toString());
 			result = "{STATE:OK}";
 			break;
 		}
-		if(result == null || "".equals(result)) result = "{COMMAND:STATE_SET;FROM:nil;TO:"+ context.getRequest().get(GeneralService.FROM) +";DATA:nil}";
+		if(result == null || "".equals(result)) result = "{COMMAND:STATE_SET;FROM:nil;TO:"+ context.getRequest().get(FROM) +";DATA:nil}";
 		context.setResponse(result);
 
 	}

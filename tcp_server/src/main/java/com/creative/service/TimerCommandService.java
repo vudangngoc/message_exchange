@@ -24,11 +24,11 @@ public class TimerCommandService implements GeneralService {
 	});
 	@Override
 	public void onEvent(DisruptorEvent event) throws Exception {
-		//{COMMAND:TIMER_XXX;FROM:XXX;TO:XXX;DATA:{}}
+		//{FROM:XXX;COMMAND:TIMER_XXX;TO:XXX;DATA:{}}
 		Context context = event.context;
 		String command;
 		try{
-			command = context.getRequest().get(GeneralService.COMMAND);
+			command = context.getRequest().get(COMMAND);
 		}catch(JSONException e){
 			return;
 		}
@@ -36,12 +36,16 @@ public class TimerCommandService implements GeneralService {
 		String result = "";
 		switch(command){
 		case "TIMER_EDIT":
+			//edit a timer
 			break;
 		case "TIMER_SET":
+			//create a timer
 			break;
 		case "TIMER_REMOVE":
+			//delete a timer
 			break;
 		case "TIMER_LIST":
+			//list all timers of a node
 			break;
 		}
 		if(result == null || "".equals(result)) result = "{}";
