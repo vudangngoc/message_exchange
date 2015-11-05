@@ -16,6 +16,15 @@ public class TimerCommandService implements GeneralService {
 		//init checkTimer
 	}
 	final static Logger logger = Logger.getLogger(TimerCommandService.class);
+	final static String STATE = "STATE";
+	final static String TIME_FIRE = "TIME_FIRE";
+	final static String TIMER_ID = "TIMER_ID";
+	final static String REPEATLY = "REPEATLY";
+	final static String REPEAT_HOURLY = "REPEAT_HOURLY";
+	final static String REPEAT_DAILY = "REPEAT_DAILY";
+	final static String REPEAT_WEEKLY = "REPEAT_WEEKLY";
+	final static String REPEAT_MONTHLY = "REPEAT_MONTHLY";
+	final static String REPEAT_NONE = "REPEAT_NONE";
 	PriorityQueue<TimerCommand> queue = new PriorityQueue<TimerCommand>(100,new Comparator<TimerCommand>() {
 		@Override
 		public int compare(TimerCommand o1, TimerCommand o2) {
@@ -24,7 +33,7 @@ public class TimerCommandService implements GeneralService {
 	});
 	@Override
 	public void onEvent(DisruptorEvent event) throws Exception {
-		//{FROM:XXX;COMMAND:TIMER_XXX;TO:XXX;DATA:{}}
+		//{FROM:XXX;COMMAND:TIMER_XXX;TO:XXX;STATE:xxx;TIME_FIRE:XXXX;REPEATLY:XXXX}}
 		Context context = event.context;
 		String command;
 		try{

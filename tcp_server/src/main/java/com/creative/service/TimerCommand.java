@@ -31,4 +31,11 @@ public class TimerCommand {
 	public void setRemainTime(long time){
 		this.timeOut = now + time;
 	}
+	@Override
+	public boolean equals(Object e){
+		if(e instanceof TimerCommand){
+			return this.id.equals(((TimerCommand)e).id);
+		}else
+			return false;
+	}
 }
