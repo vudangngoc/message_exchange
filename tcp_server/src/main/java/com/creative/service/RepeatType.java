@@ -1,0 +1,3 @@
+package com.creative.service;
+
+enum RepeatType {REPEAT_NONE,REPEAT_HOURLY,REPEAT_DAILY,REPEAT_WEEKLY,REPEAT_MONTHLY;}
