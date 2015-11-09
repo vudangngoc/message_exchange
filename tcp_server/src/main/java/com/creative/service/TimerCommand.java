@@ -1,5 +1,8 @@
 package com.creative.service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -13,7 +16,8 @@ import java.util.UUID;
  */
 public class TimerCommand implements Comparable<TimerCommand>{
 	private static long now;
-	private static Calendar calendar = Calendar.getInstance();;
+	private static Calendar calendar = Calendar.getInstance();
+	private static final String TIME_FORMAT= "yyyy-MM-dd HH:mm:ss z";
 	/**
 	 * Call before work with multi instances of TimeCommand
 	 */
@@ -22,22 +26,36 @@ public class TimerCommand implements Comparable<TimerCommand>{
 		calendar.setTime(new Date());
 	}
 	public String command;
-	public TimerCommand(String command, String timeConfig){
-		this.timeConfig = timeConfig;
+	public TimerCommand(String command, String timeConfig, RepeatType repeatType){
+		this.setTimeConfig(timeConfig);
 		this.command = command;
+		this.repeatType = repeatType;
 		this.id = UUID.randomUUID().toString();
+	}
+	public void updateNextTime(){
+		if(this.repeatType == RepeatType.REPEAT_NONE) this.nextRiseTime = 0;
 	}
 	public static void setNow(long time) {
 		now = time;
 	}
 	private long nextRiseTime;
 	private String id;
-	private String timeConfig;
-	private int minute;
-	private int hour;
-	private int dayOfMonth;
-	private int month;
-	private int dayOfWeek;
+	private RepeatType repeatType;
+	private Calendar timeConfig = Calendar.getInstance();
+	public Calendar getTimeConfig() {
+		return timeConfig;
+	}
+	public void setTimeConfig(String timeConfig) {
+		DateFormat formatter = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
+		try {
+			Date date = formatter.parse(timeConfig);
+			this.timeConfig.setTime(date);
+		} catch (ParseException e) {
+			
+		}
+		
+	}
+
 	public long getRemainTime(){
 		return this.nextRiseTime - now;
 	}
@@ -70,35 +88,5 @@ public class TimerCommand implements Comparable<TimerCommand>{
 	}
 	public void setCommand(String command) {
 		this.command = command;
-	}
-	public int getMinute() {
-		return minute;
-	}
-	public void setMinute(int minute) {
-		this.minute = minute;
-	}
-	public int getHour() {
-		return hour;
-	}
-	public void setHour(int hour) {
-		this.hour = hour;
-	}
-	public int getDayOfMonth() {
-		return dayOfMonth;
-	}
-	public void setDayOfMonth(int dayOfMonth) {
-		this.dayOfMonth = dayOfMonth;
-	}
-	public int getMonth() {
-		return month;
-	}
-	public void setMonth(int month) {
-		this.month = month;
-	}
-	public int getDayOfWeek() {
-		return dayOfWeek;
-	}
-	public void setDayOfWeek(int dayOfWeek) {
-		this.dayOfWeek = dayOfWeek;
 	}
 }
