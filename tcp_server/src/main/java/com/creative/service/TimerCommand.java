@@ -3,9 +3,10 @@ package com.creative.service;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
+
+import org.apache.log4j.Logger;
 /**
  * TimerCommand should aware current system time, but it require call
  * System.currentTimeMillis() and cause big trouble if there are a lot of
@@ -15,17 +16,19 @@ import java.util.UUID;
  *
  */
 public class TimerCommand implements Comparable<TimerCommand>{
+	final static Logger logger = Logger.getLogger(TimerCommand.class);
 	private static long now;
-	private static Calendar calendar = Calendar.getInstance();
 	private static final String TIME_FORMAT= "yyyy-MM-dd HH:mm:ss z";
 	/**
 	 * Call before work with multi instances of TimeCommand
 	 */
 	public static void updateCurrent(){
 		now = System.currentTimeMillis();
-		calendar.setTime(new Date());
 	}
-	public String command;
+	private String command;
+	private long nextRiseTime;
+	private String id;
+	private RepeatType repeatType;
 	public TimerCommand(String command, String timeConfig, RepeatType repeatType){
 		this.setTimeConfig(timeConfig);
 		this.command = command;
@@ -33,27 +36,21 @@ public class TimerCommand implements Comparable<TimerCommand>{
 		this.id = UUID.randomUUID().toString();
 	}
 	public void updateNextTime(){
-		if(this.repeatType == RepeatType.REPEAT_NONE) this.nextRiseTime = 0;
+		long nextTime = RepeatType.getPeriod(repeatType);
+		if(TimerCommand.now > nextRiseTime) //Prevent call this function many times
+			nextRiseTime += nextTime;
 	}
-	public static void setNow(long time) {
-		now = time;
-	}
-	private long nextRiseTime;
-	private String id;
-	private RepeatType repeatType;
-	private Calendar timeConfig = Calendar.getInstance();
-	public Calendar getTimeConfig() {
-		return timeConfig;
-	}
-	public void setTimeConfig(String timeConfig) {
+
+	public boolean setTimeConfig(String timeConfig) {
 		DateFormat formatter = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
 		try {
 			Date date = formatter.parse(timeConfig);
-			this.timeConfig.setTime(date);
+			this.nextRiseTime = date.getTime();
+			return true;
 		} catch (ParseException e) {
-			
-		}
-		
+			logger.debug("Parse Date faile ",e);
+			return false;
+		}		
 	}
 
 	public long getRemainTime(){
@@ -66,6 +63,10 @@ public class TimerCommand implements Comparable<TimerCommand>{
 	
 	public void setNextRiseTime(long time){
 		this.nextRiseTime = time;
+	}
+	
+	public long getNextRiseTime(){
+		return this.nextRiseTime;
 	}
 	
 	public void setRemainTime(long time){
@@ -88,5 +89,11 @@ public class TimerCommand implements Comparable<TimerCommand>{
 	}
 	public void setCommand(String command) {
 		this.command = command;
+	}
+	public RepeatType getRepeatType() {
+		return repeatType;
+	}
+	public void setRepeatType(RepeatType repeatType) {
+		this.repeatType = repeatType;
 	}
 }

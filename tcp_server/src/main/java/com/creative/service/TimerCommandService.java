@@ -28,7 +28,7 @@ public class TimerCommandService implements GeneralService {
 	PriorityQueue<TimerCommand> queue = new PriorityQueue<TimerCommand>(100,new Comparator<TimerCommand>() {
 		@Override
 		public int compare(TimerCommand o1, TimerCommand o2) {
-			return (int) (o1.getRemainTime() - o2.getRemainTime());
+			return (int) (o1.getNextRiseTime() - o2.getNextRiseTime());
 		}
 	});
 	@Override
@@ -72,11 +72,11 @@ public class TimerCommandService implements GeneralService {
 			if(queue.size() < 1) break;
 			try {
 				Thread.sleep(1000);
-				TimerCommand.setNow(System.currentTimeMillis());
+				TimerCommand.updateCurrent();
 				if(queue.peek().getRemainTime() <= 0) {
 					while(queue.size() > 0 && queue.peek().getRemainTime() <=0){
-						ClientHandler.disrupt.push(new Context(null,queue.poll().command));
-						logger.info("Set timmer" + queue.poll().command);
+						ClientHandler.disrupt.push(new Context(null,queue.poll().getCommand()));
+						logger.info("Set timmer" + queue.poll().getCommand());
 					}
 				}
 			} catch (InterruptedException e) {
