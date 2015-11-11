@@ -1,7 +1,7 @@
 package com.creative.service;
 
 enum RepeatType {REPEAT_NONE,REPEAT_HOURLY,REPEAT_DAILY,REPEAT_WEEKLY;
-	public static long getPeriod(RepeatType repeatType){
+	public static long getRepeatDuration(RepeatType repeatType){
 		switch (repeatType) {
 		case REPEAT_DAILY:
 			return 24*60*60*1000;

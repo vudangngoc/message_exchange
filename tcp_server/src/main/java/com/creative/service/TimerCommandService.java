@@ -71,11 +71,14 @@ public class TimerCommandService implements GeneralService {
 		while(true){
 			if(queue.size() < 1) break;
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(500);
 				TimerCommand.updateCurrent();
 				if(queue.peek().getRemainTime() <= 0) {
 					while(queue.size() > 0 && queue.peek().getRemainTime() <=0){
-						ClientHandler.disrupt.push(new Context(null,queue.poll().getCommand()));
+						TimerCommand comm = queue.poll();
+						ClientHandler.disrupt.push(new Context(null,comm.getCommand()));
+						comm.updateNextTime();
+						if(comm.getRemainTime() > 0) queue.add(comm);
 						logger.info("Set timmer" + queue.poll().getCommand());
 					}
 				}

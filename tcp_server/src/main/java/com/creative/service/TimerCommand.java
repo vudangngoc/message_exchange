@@ -36,9 +36,9 @@ public class TimerCommand implements Comparable<TimerCommand>{
 		this.id = UUID.randomUUID().toString();
 	}
 	public void updateNextTime(){
-		long nextTime = RepeatType.getPeriod(repeatType);
-		if(TimerCommand.now > nextRiseTime) //Prevent call this function many times
-			nextRiseTime += nextTime;
+		if(TimerCommand.now > nextRiseTime){ //Prevent call this function many times
+			nextRiseTime += RepeatType.getRepeatDuration(repeatType);
+		}
 	}
 
 	public boolean setTimeConfig(String timeConfig) {
