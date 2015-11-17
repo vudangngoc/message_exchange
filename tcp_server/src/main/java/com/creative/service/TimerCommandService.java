@@ -6,6 +6,7 @@ import java.util.PriorityQueue;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 
+import com.creative.OrderLinkedList;
 import com.creative.context.Context;
 import com.creative.disruptor.DisruptorEvent;
 import com.creative.disruptor.DisruptorHandler;
@@ -25,12 +26,7 @@ public class TimerCommandService implements GeneralService {
 	final static String REPEAT_WEEKLY = "REPEAT_WEEKLY";
 	final static String REPEAT_MONTHLY = "REPEAT_MONTHLY";
 	final static String REPEAT_NONE = "REPEAT_NONE";
-	PriorityQueue<TimerCommand> queue = new PriorityQueue<TimerCommand>(100,new Comparator<TimerCommand>() {
-		@Override
-		public int compare(TimerCommand o1, TimerCommand o2) {
-			return (int) (o1.getNextRiseTime() - o2.getNextRiseTime());
-		}
-	});
+	OrderLinkedList<TimerCommand> queue = new OrderLinkedList<TimerCommand>();
 	@Override
 	public void onEvent(DisruptorEvent event) throws Exception {
 		//{FROM:XXX;COMMAND:TIMER_XXX;TO:XXX;STATE:xxx;TIME_FIRE:XXXX;REPEATLY:XXXX}}
@@ -69,17 +65,17 @@ public class TimerCommandService implements GeneralService {
 	}
 	private void checkTimer(){
 		while(true){
-			if(queue.size() < 1) break;
+			if(queue.getSize() < 1) break;
 			try {
 				Thread.sleep(500);
 				TimerCommand.updateCurrent();
-				if(queue.peek().getRemainTime() <= 0) {
-					while(queue.size() > 0 && queue.peek().getRemainTime() <=0){
-						TimerCommand comm = queue.poll();
+				if(queue.getHead().getRemainTime() <= 0) {
+					while(queue.getSize() > 0 && queue.getHead().getRemainTime() <=0){
+						TimerCommand comm = queue.removeHead();
 						ClientHandler.disrupt.push(new Context(null,comm.getCommand()));
 						comm.updateNextTime();
 						if(comm.getRemainTime() > 0) queue.add(comm);
-						logger.info("Set timmer" + queue.poll().getCommand());
+						logger.info("Set timmer" + comm.getCommand());
 					}
 				}
 			} catch (InterruptedException e) {
