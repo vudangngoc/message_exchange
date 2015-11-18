@@ -4,6 +4,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.creative.context.Context;
 import com.creative.disruptor.DisruptorEvent;
+
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 
 public class StateService implements GeneralService {
@@ -11,7 +13,7 @@ public class StateService implements GeneralService {
 	}
 	
 	public static final String DATA = "DATA";
-	
+	final static Logger logger = Logger.getLogger(StateService.class);
 
 	ConcurrentHashMap <String,String> messageList = new ConcurrentHashMap<String, String>();
 
@@ -47,6 +49,7 @@ public class StateService implements GeneralService {
 			break;
 		}
 		if(result == null || "".equals(result)) result = "{COMMAND:STATE_SET;FROM:nil;TO:"+ context.getRequest().get(FROM) +";DATA:nil}";
+		logger.debug("Processing " + context.getRequest().toString());
 		context.setResponse(result);
 
 	}

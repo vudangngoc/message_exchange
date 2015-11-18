@@ -2,6 +2,8 @@ package com.creative.service;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
@@ -13,8 +15,18 @@ import com.creative.disruptor.DisruptorHandler;
 import com.creative.server.ClientHandler;
 
 public class TimerCommandService implements GeneralService {
+	private ExecutorService exec;
 	public TimerCommandService(){
 		//init checkTimer
+		this.exec = Executors.newFixedThreadPool(1);
+		exec.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				checkTimer();
+				
+			}
+		});
 	}
 	final static Logger logger = Logger.getLogger(TimerCommandService.class);
 	final static String STATE = "STATE";
@@ -43,7 +55,7 @@ public class TimerCommandService implements GeneralService {
 			//edit a timer
 			break;
 		case "TIMER_SET":
-			TimerCommand tc = new TimerCommand("command", 
+			TimerCommand tc = new TimerCommand("{COMMAND:STATE_SET;FROM:X;TO:esp7_4@demo;DATA:OFF}", 
 					context.getRequest().get(TIME_FIRE), 
 					RepeatType.getRepeatByString(context.getRequest().get(REPEATLY)));
 			queue.add(tc);
@@ -67,17 +79,22 @@ public class TimerCommandService implements GeneralService {
 	}
 	private void checkTimer(){
 		while(true){
-			if(queue.getSize() < 1) break;
+			//if(queue.getSize() < 1) break;
 			try {
 				Thread.sleep(500);
+				//logger.debug("Checking queue");
 				TimerCommand.updateCurrent();
 				if(queue.getHead().getRemainTime() <= 0) {
 					while(queue.getSize() > 0 && queue.getHead().getRemainTime() <=0){
 						TimerCommand comm = queue.removeHead();
+						logger.debug("Set STATE command: " + comm.getCommand());
 						ClientHandler.disrupt.push(new Context(null,comm.getCommand()));
 						comm.updateNextTime();
-						if(comm.getRemainTime() > 0) queue.add(comm);
-						logger.info("Set timmer" + comm.getCommand());
+						if(comm.getRemainTime() > 0) {
+							queue.add(comm);
+							logger.debug("Readd to queue and fire after " + comm.getRemainTime() + "ms");
+						}
+						
 					}
 				}
 			} catch (InterruptedException e) {
