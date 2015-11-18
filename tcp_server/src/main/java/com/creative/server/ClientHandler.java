@@ -12,6 +12,7 @@ import com.creative.disruptor.DisruptorHandler;
 import com.creative.disruptor.MortalHandler;
 import com.creative.service.GeneralService;
 import com.creative.service.StateService;
+import com.creative.service.TimerCommandService;
 import com.creative.GlobalConfig;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
@@ -36,6 +37,10 @@ public class ClientHandler extends Thread{
 						Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.WORKER_LIFE_TIME)));
 				services.add(service);
 				disrupt.injectServices(service);
+				MortalHandler timerService = new MortalHandler(TimerCommandService.class,
+						Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.WORKER_LIFE_TIME)));
+				services.add(timerService);
+				disrupt.injectServices(timerService);
 				disrupt.startDisruptor();
 			} catch (InstantiationException | IllegalAccessException e) {
 				logger.debug(e);

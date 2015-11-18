@@ -13,4 +13,16 @@ enum RepeatType {REPEAT_NONE,REPEAT_HOURLY,REPEAT_DAILY,REPEAT_WEEKLY;
 			return 0;
 		}
 	}
+	public static RepeatType getRepeatByString(String type){
+		switch (type) {
+		case "REPEAT_HOURLY":
+			return REPEAT_HOURLY;
+		case "REPEAT_DAILY":
+			return REPEAT_DAILY;
+		case "REPEAT_WEEKLY":
+			return REPEAT_WEEKLY;
+		default:
+			return REPEAT_NONE;
+		}
+	}
 }

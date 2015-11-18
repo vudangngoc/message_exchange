@@ -24,7 +24,6 @@ public class TimerCommandService implements GeneralService {
 	final static String REPEAT_HOURLY = "REPEAT_HOURLY";
 	final static String REPEAT_DAILY = "REPEAT_DAILY";
 	final static String REPEAT_WEEKLY = "REPEAT_WEEKLY";
-	final static String REPEAT_MONTHLY = "REPEAT_MONTHLY";
 	final static String REPEAT_NONE = "REPEAT_NONE";
 	OrderLinkedList<TimerCommand> queue = new OrderLinkedList<TimerCommand>();
 	@Override
@@ -44,7 +43,11 @@ public class TimerCommandService implements GeneralService {
 			//edit a timer
 			break;
 		case "TIMER_SET":
-			//create a timer
+			TimerCommand tc = new TimerCommand("command", 
+					context.getRequest().get(TIME_FIRE), 
+					RepeatType.getRepeatByString(context.getRequest().get(REPEATLY)));
+			queue.add(tc);
+			result = "{ID:" + tc.getId() + "}";
 			break;
 		case "TIMER_REMOVE":
 			//delete a timer
@@ -55,7 +58,6 @@ public class TimerCommandService implements GeneralService {
 		}
 		if(result == null || "".equals(result)) result = "{}";
 		context.setResponse(result);
-
 	}
 
 	@Override
@@ -81,7 +83,7 @@ public class TimerCommandService implements GeneralService {
 			} catch (InterruptedException e) {
 				break;
 			}
-			
+
 		}
 	}
 
