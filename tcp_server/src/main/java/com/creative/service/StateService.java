@@ -9,66 +9,66 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 
 public class StateService implements GeneralService {
-	public StateService(){
-	}
-	
-	public static final String DATA = "DATA";
-	final static Logger logger = Logger.getLogger(StateService.class);
+  public StateService(){
+  }
 
-	ConcurrentHashMap <String,String> messageList = new ConcurrentHashMap<String, String>();
+  public static final String DATA = "DATA";
+  final static Logger logger = Logger.getLogger(StateService.class);
 
-	public boolean canHandle(String command) {
-		if(command == null || "".equals(command)) return false;
-		return command.startsWith("STATE_");
-	}
+  ConcurrentHashMap <String,String> messageList = new ConcurrentHashMap<String, String>();
 
-	@Override
-	public void onEvent(DisruptorEvent event) throws Exception {
-		Context context = event.context;
-		String command;
-		try{
-			command = context.getRequest().get(COMMAND);
-		}catch(JSONException e){
-			return;
-		}
-		if(!canHandle(command)) return;
-		String result = "";
-		switch(command){
-		case "STATE_GET":
-			result = messageList.get(context.getRequest().get(FROM));
-			break;
-		case "STATE_INFO":
-			result = getInfo();
-			break;
-		case "STATE_STATUS":
-			result = getStatus();
-			break;
-		case "STATE_SET":
-			messageList.put(context.getRequest().get(TO), context.getRequest().toString());
-			result = "{STATE:OK}";
-			break;
-		}
-		if(result == null || "".equals(result)) result = "{COMMAND:STATE_SET;FROM:nil;TO:"+ context.getRequest().get(FROM) +";DATA:nil}";
-		logger.debug("Processing " + context.getRequest().toString());
-		context.setResponse(result);
+  public boolean canHandle(String command) {
+    if(command == null || "".equals(command)) return false;
+    return command.startsWith("STATE_");
+  }
 
-	}
+  @Override
+  public void onEvent(DisruptorEvent event) throws Exception {
+    Context context = event.context;
+    String command;
+    try{
+      command = context.getRequest().get(COMMAND);
+    }catch(JSONException e){
+      return;
+    }
+    if(!canHandle(command)) return;
+    String result = "";
+    switch(command){
+      case "STATE_GET":
+        result = messageList.get(context.getRequest().get(FROM));
+        break;
+      case "STATE_INFO":
+        result = getInfo();
+        break;
+      case "STATE_STATUS":
+        result = getStatus();
+        break;
+      case "STATE_SET":
+        messageList.put(context.getRequest().get(TO), context.getRequest().toString());
+        result = "{STATE:OK}";
+        break;
+    }
+    if(result == null || "".equals(result)) result = "{COMMAND:STATE_SET;FROM:nil;TO:"+ context.getRequest().get(FROM) +";DATA:nil}";
+    logger.debug("Processing " + context.getRequest().toString());
+    context.setResponse(result);
 
-	@Override
-	public String getStatus() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  }
 
-	@Override
-	public String getInfo() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	final public static String createSetStateCommand(String from, String to, String state){
-		String result = "{COMMAND:STATE_SET;FROM:" + from + ";TO:" + to + ";DATA:" + state + "}";
-		
-		return result;
-	}
+  @Override
+  public String getStatus() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String getInfo() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  final public static String createSetStateCommand(String from, String to, String state){
+    String result = "{COMMAND:STATE_SET;FROM:" + from + ";TO:" + to + ";DATA:" + state + "}";
+
+    return result;
+  }
 }
