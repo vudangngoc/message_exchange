@@ -10,6 +10,7 @@ import org.json.JSONException;
 
 import com.creative.OrderLinkedList;
 import com.creative.context.Context;
+import com.creative.context.IData;
 import com.creative.disruptor.DisruptorEvent;
 import com.creative.disruptor.DisruptorHandler;
 import com.creative.server.ClientHandler;
@@ -42,9 +43,10 @@ public class TimerCommandService implements GeneralService {
 	public void onEvent(DisruptorEvent event) throws Exception {
 		//{FROM:XXX;COMMAND:TIMER_XXX;TO:XXX;STATE:xxx;TIME_FIRE:XXXX;REPEATLY:XXXX}}
 		Context context = event.context;
+		IData request = context.getRequest();
 		String command;
 		try{
-			command = context.getRequest().get(COMMAND);
+			command = request.get(COMMAND);
 		}catch(JSONException e){
 			return;
 		}
@@ -55,9 +57,12 @@ public class TimerCommandService implements GeneralService {
 			//edit a timer
 			break;
 		case "TIMER_SET":
-			TimerCommand tc = new TimerCommand("{COMMAND:STATE_SET;FROM:X;TO:esp7_4@demo;DATA:OFF}", 
-					context.getRequest().get(TIME_FIRE), 
-					RepeatType.getRepeatByString(context.getRequest().get(REPEATLY)));
+			String commandToFire = StateService.createSetStateCommand(request.get(FROM), 
+					request.get(TO), 
+					request.get(STATE));
+			TimerCommand tc = new TimerCommand(commandToFire, 
+					request.get(TIME_FIRE), 
+					RepeatType.getRepeatByString(request.get(REPEATLY)));
 			queue.add(tc);
 			result = "{ID:" + tc.getId() + "}";
 			break;
@@ -79,10 +84,8 @@ public class TimerCommandService implements GeneralService {
 	}
 	private void checkTimer(){
 		while(true){
-			//if(queue.getSize() < 1) break;
 			try {
 				Thread.sleep(500);
-				//logger.debug("Checking queue");
 				TimerCommand.updateCurrent();
 				if(queue.getHead().getRemainTime() <= 0) {
 					while(queue.getSize() > 0 && queue.getHead().getRemainTime() <=0){

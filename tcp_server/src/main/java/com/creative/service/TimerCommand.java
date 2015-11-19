@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 public class TimerCommand implements Comparable<TimerCommand>{
 	final static Logger logger = Logger.getLogger(TimerCommand.class);
 	private static long now;
-	private static final String TIME_FORMAT= "yyyy-MMM-dd HH-mm-ss";
+	private static final String TIME_FORMAT= "yyyy-MMM-dd HH-mm-ss Z";
 	/**
 	 * Call before work with multi instances of TimeCommand
 	 */

@@ -65,4 +65,10 @@ public class StateService implements GeneralService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	final public static String createSetStateCommand(String from, String to, String state){
+		String result = "{COMMAND:STATE_SET;FROM:" + from + ";TO:" + to + ";DATA:" + state + "}";
+		
+		return result;
+	}
 }
