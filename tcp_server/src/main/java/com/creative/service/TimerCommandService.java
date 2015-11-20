@@ -1,7 +1,5 @@
 package com.creative.service;
 
-import java.util.Comparator;
-import java.util.PriorityQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -12,7 +10,6 @@ import com.creative.OrderLinkedList;
 import com.creative.context.Context;
 import com.creative.context.IData;
 import com.creative.disruptor.DisruptorEvent;
-import com.creative.disruptor.DisruptorHandler;
 import com.creative.server.ClientHandler;
 
 public class TimerCommandService implements GeneralService {
@@ -38,7 +35,7 @@ public class TimerCommandService implements GeneralService {
   final static String REPEAT_DAILY = "REPEAT_DAILY";
   final static String REPEAT_WEEKLY = "REPEAT_WEEKLY";
   final static String REPEAT_NONE = "REPEAT_NONE";
-  OrderLinkedList<TimerCommand> queue = new OrderLinkedList<TimerCommand>();
+  static OrderLinkedList<TimerCommand> queue = new OrderLinkedList<TimerCommand>();
   @Override
   public void onEvent(DisruptorEvent event) throws Exception {
     //{FROM:XXX;COMMAND:TIMER_XXX;TO:XXX;STATE:xxx;TIME_FIRE:XXXX;REPEATLY:XXXX}}
@@ -91,6 +88,7 @@ public class TimerCommandService implements GeneralService {
     while(true){
       try {
         Thread.sleep(500);
+        if(queue.getHead() == null) continue;
         TimerCommand.updateCurrent();
         if(queue.getHead().getRemainTime() <= 0) {
           while(queue.getSize() > 0 && queue.getHead().getRemainTime() <=0){
