@@ -1,7 +1,11 @@
 package com.creative.service;
 
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.print.attribute.standard.Fidelity;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
@@ -72,7 +76,7 @@ public class TimerCommandService implements GeneralService {
         else result = "{RESULT:NOT_FOUND}";
         break;
       case "TIMER_LIST":
-        //list all timers of a node
+        result = getStatus();
         break;
     }
     if(result == null || "".equals(result)) result = "{}";
@@ -109,10 +113,26 @@ public class TimerCommandService implements GeneralService {
 
     }
   }
-
+  
+  public String convertString(TimerCommand timer){
+    StringBuilder builder = new StringBuilder();
+    String comm = timer.getCommand();
+    builder.append("{");
+    builder.append(TIMER_ID).append(":").append(timer.getId()).append(";");
+    builder.append(COMMAND).append(":").append(timer.getCommand()).append(";");
+    builder.append(TIME_FIRE).append(":").append(timer.getNextRiseTime()).append(";");
+    builder.append("}");
+    return builder.toString();
+  }
   @Override
   public String getStatus() {
-    // TODO Auto-generated method stub
+    List<TimerCommand> list = queue.getAll();
+    StringBuilder result = new StringBuilder();
+    result.append("{");
+    for(TimerCommand tc : list){
+      result.append(convertString(tc));
+    }
+    result.append("}");
     return null;
   }
 
