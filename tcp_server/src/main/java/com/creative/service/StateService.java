@@ -56,8 +56,13 @@ public class StateService implements GeneralService {
 
   @Override
   public String getStatus() {
-    // TODO Auto-generated method stub
-    return null;
+    StringBuffer result = new StringBuffer();
+    result.append("{");
+    for(String s : messageList.values()){
+      result.append(s).append(";");
+    }
+    result.append("}");
+    return result.toString();
   }
 
   @Override

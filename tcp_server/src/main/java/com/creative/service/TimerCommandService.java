@@ -130,10 +130,10 @@ public class TimerCommandService implements GeneralService {
     StringBuilder result = new StringBuilder();
     result.append("{");
     for(TimerCommand tc : list){
-      result.append(convertString(tc));
+      result.append(convertString(tc)).append(";");
     }
     result.append("}");
-    return null;
+    return result.toString();
   }
 
   @Override
