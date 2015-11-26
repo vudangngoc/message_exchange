@@ -72,8 +72,12 @@ public class TimerCommandService implements GeneralService {
         TimerCommand temp = new TimerCommand();
         temp.setId(request.get(TIMER_ID));
         temp = queue.getAndRemoveSimilar(temp);
-        if(temp != null) result = "{RESULT:FOUND}";
-        else result = "{RESULT:NOT_FOUND}";
+        if(temp != null) result = convertString(temp);
+        else result = "{}";
+        break;
+      case "TIMER_REMOVE_ALL":
+        //delete all timer
+        queue.removeAll();
         break;
       case "TIMER_LIST":
         result = getStatus();
@@ -129,8 +133,14 @@ public class TimerCommandService implements GeneralService {
     List<TimerCommand> list = queue.getAll();
     StringBuilder result = new StringBuilder();
     result.append("{");
+    int count = 0;
     for(TimerCommand tc : list){
-      result.append(convertString(tc)).append(";");
+      result.append("{\"");
+      result.append(count);
+      result.append("\":\"");
+      result.append(convertString(tc)).append("\"");
+      result.append("};");
+      count++;
     }
     result.append("}");
     return result.toString();
