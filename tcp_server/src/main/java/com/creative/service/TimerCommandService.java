@@ -65,7 +65,7 @@ public class TimerCommandService implements GeneralService {
             request.get(TIME_FIRE), 
             RepeatType.getRepeatByString(request.get(REPEATLY)));
         queue.add(tc);
-        result = "{ID:" + tc.getId() + "}";
+        result = "{"+ TIMER_ID +":" + tc.getId() + "}";
         break;
       case "TIMER_REMOVE":
         //delete a timer
@@ -121,10 +121,10 @@ public class TimerCommandService implements GeneralService {
   public String convertString(TimerCommand timer){
     StringBuilder builder = new StringBuilder();
     String comm = timer.getCommand();
-    builder.append("{");
-    builder.append(TIMER_ID).append(":").append(timer.getId()).append(";");
-    builder.append(COMMAND).append(":").append(timer.getCommand()).append(";");
-    builder.append(TIME_FIRE).append(":").append(timer.getNextRiseTime()).append(";");
+    builder.append("{\"");
+    builder.append(TIMER_ID).append("\":\"").append(timer.getId()).append("\",\"");
+    builder.append(COMMAND).append("\":\"").append(timer.getCommand()).append("\",\"");
+    builder.append(TIME_FIRE).append("\":\"").append(timer.getNextRiseTime()).append("\"");
     builder.append("}");
     return builder.toString();
   }
@@ -132,17 +132,11 @@ public class TimerCommandService implements GeneralService {
   public String getStatus() {
     List<TimerCommand> list = queue.getAll();
     StringBuilder result = new StringBuilder();
-    result.append("{");
-    int count = 0;
+    result.append("{\"data\":[");
     for(TimerCommand tc : list){
-      result.append("{\"");
-      result.append(count);
-      result.append("\":\"");
-      result.append(convertString(tc)).append("\"");
-      result.append("};");
-      count++;
+      result.append(convertString(tc)).append(",");
     }
-    result.append("}");
+    result.append("]}");
     return result.toString();
   }
 
