@@ -1,12 +1,15 @@
 package com.creative.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.creative.context.Context;
+import com.creative.context.DataObjectFactory;
+import com.creative.context.IData;
 import com.creative.disruptor.DisruptorEvent;
 
 import org.apache.log4j.Logger;
-import org.json.JSONException;
 
 public class StateService implements GeneralService {
   public StateService(){
@@ -26,11 +29,8 @@ public class StateService implements GeneralService {
   public void onEvent(DisruptorEvent event) throws Exception {
     Context context = event.context;
     String command;
-    try{
-      command = context.getRequest().get(COMMAND);
-    }catch(JSONException e){
-      return;
-    }
+    command = context.getRequest().get(COMMAND);
+    if("".equals(command)) return;
     if(!canHandle(command)) return;
     String result = "";
     switch(command){
@@ -45,7 +45,9 @@ public class StateService implements GeneralService {
         break;
       case "STATE_SET":
         messageList.put(context.getRequest().get(TO), context.getRequest().toString());
-        result = "{STATE:OK}";
+        IData data = DataObjectFactory.createDataObject();
+        data.set("STATE", "OK");
+        result = data.toString();
         break;
     }
     if(result == null || "".equals(result)) result = "{COMMAND:STATE_SET;FROM:nil;TO:"+ context.getRequest().get(FROM) +";DATA:nil}";
@@ -56,13 +58,12 @@ public class StateService implements GeneralService {
 
   @Override
   public String getStatus() {
-    StringBuffer result = new StringBuffer();
-    result.append("{");
-    for(String s : messageList.values()){
-      result.append(s).append(";");
-    }
-    result.append("}");
-    return result.toString();
+    List<String> list = new ArrayList<>();
+    for(String s :messageList.values())
+      list.add(s);
+    IData data = DataObjectFactory.createDataObject();
+    data.setList("data", list);
+    return data.toString();
   }
 
   @Override
@@ -72,8 +73,12 @@ public class StateService implements GeneralService {
   }
 
   final public static String createSetStateCommand(String from, String to, String state){
-    String result = "{COMMAND:STATE_SET;FROM:" + from + ";TO:" + to + ";DATA:" + state + "}";
+    IData data = DataObjectFactory.createDataObject();
+    data.set(COMMAND, "STATE_SET");
+    data.set(FROM, from);
+    data.set(TO, to);
+    data.set(DATA, state);
 
-    return result;
+    return data.toString();
   }
 }

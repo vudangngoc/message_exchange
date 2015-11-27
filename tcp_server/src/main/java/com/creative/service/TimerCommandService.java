@@ -1,5 +1,6 @@
 package com.creative.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -12,6 +13,7 @@ import org.json.JSONException;
 
 import com.creative.OrderLinkedList;
 import com.creative.context.Context;
+import com.creative.context.DataObjectFactory;
 import com.creative.context.IData;
 import com.creative.disruptor.DisruptorEvent;
 import com.creative.server.ClientHandler;
@@ -119,25 +121,21 @@ public class TimerCommandService implements GeneralService {
   }
   
   public String convertString(TimerCommand timer){
-    StringBuilder builder = new StringBuilder();
-    String comm = timer.getCommand();
-    builder.append("{\"");
-    builder.append(TIMER_ID).append("\":\"").append(timer.getId()).append("\",\"");
-    builder.append(COMMAND).append("\":\"").append(timer.getCommand()).append("\",\"");
-    builder.append(TIME_FIRE).append("\":\"").append(timer.getNextRiseTime()).append("\"");
-    builder.append("}");
-    return builder.toString();
+    IData data = DataObjectFactory.createDataObject();
+    data.set(TIMER_ID, timer.getId());
+    data.set(COMMAND, timer.getCommand());
+    data.set(TIME_FIRE, timer.getNextRiseTime() + "");
+    return data.toString();
   }
   @Override
   public String getStatus() {
     List<TimerCommand> list = queue.getAll();
-    StringBuilder result = new StringBuilder();
-    result.append("{\"data\":[");
-    for(TimerCommand tc : list){
-      result.append(convertString(tc)).append(",");
-    }
-    result.append("]}");
-    return result.toString();
+    List<String> listString = new ArrayList<>();
+    for(TimerCommand tc : list)
+      listString.add(convertString(tc));
+    IData data = DataObjectFactory.createDataObject();
+    data.setList("data", listString);
+    return data.toString();
   }
 
   @Override

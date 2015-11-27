@@ -2,15 +2,10 @@ package com.creative.service;
 
 import static org.junit.Assert.*;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.junit.Test;
-
 import com.creative.GlobalConfig;
-import com.creative.context.JsonData;
+import com.creative.context.DataObjectFactory;
+import com.creative.context.IData;
 import com.creative.disruptor.MortalHandler;
 
 public class TestTimerCommandService extends ServiceTest {
@@ -45,7 +40,7 @@ public class TestTimerCommandService extends ServiceTest {
       e.printStackTrace();
     }    
     //Then
-    JsonData data = new JsonData(context.getResponse());
+    IData data = DataObjectFactory.createDataObject(context.getResponse());
     assertFalse("".equals(data.get(TimerCommandService.TIMER_ID)));
     context.setRequest("{COMMAND:TIMER_REMOVE_ALL}");
     disrupt.push(context);
@@ -76,7 +71,7 @@ public class TestTimerCommandService extends ServiceTest {
     }
 
     //Then    
-    JsonData data = new JsonData(context.getResponse());   
+    IData data = DataObjectFactory.createDataObject(context.getResponse());
     assertEquals(3,data.getList("data").size());
     context.setRequest("{COMMAND:TIMER_REMOVE_ALL}");
     disrupt.push(context);
@@ -97,7 +92,7 @@ public class TestTimerCommandService extends ServiceTest {
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    JsonData data = new JsonData(context.getResponse());
+    IData data = DataObjectFactory.createDataObject(context.getResponse());
     String id = data.get(TimerCommandService.TIMER_ID);
     //When
     context.setRequest("{COMMAND:TIMER_REMOVE;" + TimerCommandService.TIMER_ID + ":" + id + "}");
@@ -120,7 +115,7 @@ public class TestTimerCommandService extends ServiceTest {
     TimerCommand tc = new TimerCommand("COMMAND", "2015-NOV-28 21-58-01 +0700", RepeatType.REPEAT_DAILY);
     String timeLong = "1448722681000";
     TimerCommandService service = new TimerCommandService();
-    JsonData data = new JsonData(service.convertString(tc));
+    IData data = DataObjectFactory.createDataObject(service.convertString(tc));
     assertEquals("COMMAND", data.get(TimerCommandService.COMMAND));
     assertEquals(timeLong, data.get(TimerCommandService.TIME_FIRE));
     assertFalse("".equals(data.get(TimerCommandService.TIMER_ID)));
