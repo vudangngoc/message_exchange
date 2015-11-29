@@ -23,6 +23,7 @@
 	
 	<context:component-scan base-package="com.creative.front_server" />
 	
-	
+	<beans:bean id="connector" class="com.creative.connector.back_server.MockConnector"></beans:bean>
+	<beans:bean id="stateBusiness" class="com.creative.business.StateBusiness"></beans:bean>
 	
 </beans:beans>

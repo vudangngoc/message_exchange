@@ -81,4 +81,10 @@ public class StateService implements GeneralService {
 
     return data.toString();
   }
+
+  public static String createGetStatus() {
+    IData data = DataObjectFactory.createDataObject();
+    data.set(COMMAND, "STATE_STATUS");
+    return data.toString();
+  }
 }

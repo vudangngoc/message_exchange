@@ -8,10 +8,8 @@
   <packaging>pom</packaging>
   <version>0.0.1</version>
   <modules>
-    <module>general_server</module>
-	<module>crypto</module>
-	<module>service_base</module>
-	<module>service_state</module>
+    <module>tcp_server</module>
+    <module>front-server</module>
   </modules>
   <dependencies>
 
