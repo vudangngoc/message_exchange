@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
 
 import org.slf4j.Logger;
@@ -24,6 +25,8 @@ import org.slf4j.LoggerFactory;
 public class TCPConnector implements Connector {
 
   private Socket socket;
+  private String host;
+  private int port;
   private static final Logger logger = LoggerFactory.getLogger(TCPConnector.class);
   /**
    * Setup TCP server properties
@@ -32,6 +35,8 @@ public class TCPConnector implements Connector {
    */
   public void setUp(String host, int port) {
     InetAddress address;
+    this.host = host;
+    this.port = port;
     try {
       address = InetAddress.getByName(host);
       socket = new Socket(address, port);
@@ -52,6 +57,10 @@ public class TCPConnector implements Connector {
       if(socket == null) return "";
       if(!message.endsWith("\n")) message += "\n";
       //Send the message to the server
+      if(socket.isClosed()) {
+        InetAddress address = InetAddress.getByName(host);
+        socket = new Socket(address, port);
+      } 
       OutputStream os = socket.getOutputStream();
       OutputStreamWriter osw = new OutputStreamWriter(os);
       BufferedWriter bw = new BufferedWriter(osw);

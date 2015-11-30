@@ -29,23 +29,21 @@ public class StateController {
 
   private static final Logger logger = LoggerFactory.getLogger(StateController.class);
   
-  @Autowired
-  StateBusiness stateBusiness;
-
+  StateBusiness stateBusiness = new StateBusiness();
 
   @RequestMapping(value = "/state", method = RequestMethod.GET)
   public String state(Locale locale, Model model) {
     StateModel sm = new StateModel();
-    sm.setDeviceList(StateBusiness.getAllDevice());
+    sm.setDeviceList(stateBusiness.getAllDevice());
     model.addAttribute("stateModel", sm); 
     return "state";
   }
   @RequestMapping(value = "/state", method = RequestMethod.POST)
   public String state(@ModelAttribute StateModel state,Model model) {
     StateModel sm = new StateModel();
-    sm.setDeviceList(StateBusiness.getAllDevice());
+    sm.setDeviceList(stateBusiness.getAllDevice());
     model.addAttribute("stateModel",  sm);
-    StateBusiness.setDeviceState(state.getDeviceId(), state.getState());
+    stateBusiness.setDeviceState(state.getDeviceId(), state.getState());
     return "state";
   }
 }
