@@ -40,10 +40,11 @@ public class StateController {
   }
   @RequestMapping(value = "/state", method = RequestMethod.POST)
   public String state(@ModelAttribute StateModel state,Model model) {
+    stateBusiness.setDeviceState(state.getDeviceId(), state.getState());
     StateModel sm = new StateModel();
     sm.setDeviceList(stateBusiness.getAllDevice());
     model.addAttribute("stateModel",  sm);
-    stateBusiness.setDeviceState(state.getDeviceId(), state.getState());
+    
     return "state";
   }
 }

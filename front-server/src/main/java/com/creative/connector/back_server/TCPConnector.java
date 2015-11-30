@@ -40,6 +40,7 @@ public class TCPConnector implements Connector {
     try {
       address = InetAddress.getByName(host);
       socket = new Socket(address, port);
+      socket.close();
     } catch (UnknownHostException e) {
       logger.debug("Cannot resolve host " + host);
     } catch (IOException e) {
@@ -67,7 +68,7 @@ public class TCPConnector implements Connector {
 
       bw.write(message);
       bw.flush();
-      System.out.println("Message sent to the server");
+      logger.debug("Message sent to the server");
 
       //Get the return message from the server
       InputStream is = socket.getInputStream();
