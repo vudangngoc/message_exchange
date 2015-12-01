@@ -32,26 +32,32 @@ public class StateService implements GeneralService {
     command = context.getRequest().get(COMMAND);
     if("".equals(command)) return;
     if(!canHandle(command)) return;
+    IData request = context.getRequest();
     String result = "";
     switch(command){
       case "STATE_GET":
-        result = messageList.get(context.getRequest().get(FROM));
+        result = messageList.get(request.get(FROM));
         break;
       case "STATE_INFO":
         result = getInfo();
+        break;
+      case "STATE_BOOT":
+        if(!messageList.containsKey(request.get(TO)))
+          messageList.put(request.get(TO), createSetStateCommand(request.get(FROM),request.get(TO),request.get(DATA)));
         break;
       case "STATE_STATUS":
         result = getStatus();
         break;
       case "STATE_SET":
-        messageList.put(context.getRequest().get(TO), context.getRequest().toString());
-        IData data = DataObjectFactory.createDataObject();
-        data.set("STATE", "OK");
-        result = data.toString();
+        messageList.put(request.get(TO), request.toString());
         break;
     }
-    if(result == null || "".equals(result)) result = "{COMMAND:STATE_SET;FROM:nil;TO:"+ context.getRequest().get(FROM) +";DATA:nil}";
-    logger.debug("Processing " + context.getRequest().toString());
+    if(result == null || "".equals(result)) {
+      IData data = DataObjectFactory.createDataObject();
+      data.set("STATE", "OK");
+      result = data.toString();
+      }
+    logger.debug("Processing " + request.toString());
     context.setResponse(result);
 
   }
