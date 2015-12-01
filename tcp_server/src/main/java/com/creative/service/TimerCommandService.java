@@ -143,4 +143,21 @@ public class TimerCommandService implements GeneralService {
     // TODO Auto-generated method stub
     return null;
   }
+  
+  public static String createAddTimeCommand(String from, String to, RepeatType repeat, long time, String state){
+    StringBuilder result = new StringBuilder();
+    return result.toString();
+  }
+  public static String createEditTimeCommand(String id, RepeatType repeat, long time, String state){
+    StringBuilder result = new StringBuilder();
+    return result.toString();
+  }
+  public static String createRemoveTimeCommand(String id){
+    StringBuilder result = new StringBuilder();
+    return result.toString();
+  }
+  public static String createListTimeCommand(){
+    StringBuilder result = new StringBuilder();
+    return result.toString();
+  }
 }
