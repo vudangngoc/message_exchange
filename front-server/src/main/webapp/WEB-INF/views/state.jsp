@@ -17,7 +17,7 @@
 				</form:select>
 			</div>
 			<div style="display: inline;">
-				<input type="submit" value="Refresh" onclick="window.location='./state';" /> 
+				<input type="button" value="Refresh" onclick="window.location='./state';" /> 
 			</div>
 		</div>
 		<div>

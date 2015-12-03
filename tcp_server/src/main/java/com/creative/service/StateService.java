@@ -37,13 +37,13 @@ public class StateService implements GeneralService {
     switch(command){
       case "STATE_GET":
         result = messageList.get(request.get(FROM));
+        if(result == null || "".equals(result)){
+          result = createSetStateCommand(request.get(FROM),request.get(TO),request.get(DATA));
+          messageList.put(request.get(TO), result);
+        }
         break;
       case "STATE_INFO":
         result = getInfo();
-        break;
-      case "STATE_BOOT":
-        if(!messageList.containsKey(request.get(TO)))
-          messageList.put(request.get(TO), createSetStateCommand(request.get(FROM),request.get(TO),request.get(DATA)));
         break;
       case "STATE_STATUS":
         result = getStatus();
