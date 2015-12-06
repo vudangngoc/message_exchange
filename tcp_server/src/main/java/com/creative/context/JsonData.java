@@ -17,7 +17,11 @@ public class JsonData implements IData{
   }
 
   public JsonData(String data){
+  	try{	  
     this.data = new JSONObject(data);
+  	}catch(JSONException e){
+  		this.data = null;
+  	}
     this.origin = data;
   }
   public boolean setData(String data){

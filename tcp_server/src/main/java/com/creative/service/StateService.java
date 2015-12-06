@@ -18,7 +18,7 @@ public class StateService implements GeneralService {
   public static final String DATA = "DATA";
   final static Logger logger = Logger.getLogger(StateService.class);
 
-  ConcurrentHashMap <String,String> messageList = new ConcurrentHashMap<String, String>();
+  static ConcurrentHashMap <String,String> messageList = new ConcurrentHashMap<String, String>();
 
   public boolean canHandle(String command) {
     if(command == null || "".equals(command)) return false;

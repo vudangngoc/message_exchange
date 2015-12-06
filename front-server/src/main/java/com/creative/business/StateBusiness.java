@@ -24,15 +24,18 @@ public class StateBusiness {
   }
   
   public Map<String,String> getAllDevice(){
-    Map<String,String> result = new HashMap<String,String>();
-    String messageResult = connector.sendMessage(StateService.createGetStatus());
-    List<String> listResult = DataObjectFactory.createDataObject(messageResult).getList("data");
-    IData data = DataObjectFactory.createDataObject();
-    for(String s:listResult){
-      data.setData(s);
-      result.put(data.get(StateService.TO), data.toString());
-    }
-    return result;
+  	Map<String,String> result = new HashMap<String,String>();
+  	String messageResult = connector.sendMessage(StateService.createGetStatus());
+  	IData data_result = DataObjectFactory.createDataObject(messageResult);
+  	if(data_result != null){
+  		List<String> listResult = DataObjectFactory.createDataObject(messageResult).getList("data");
+  		IData data = DataObjectFactory.createDataObject();
+  		for(String s:listResult){
+  			data.setData(s);
+  			result.put(data.get(StateService.TO), data.toString());
+  		}
+  	} 
+  	return result;
   }
   
   public String setDeviceState(String name, String state){
