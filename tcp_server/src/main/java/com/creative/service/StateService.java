@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.creative.DoubleHashMap;
 import com.creative.context.Context;
 import com.creative.context.DataObjectFactory;
 import com.creative.context.IData;
@@ -18,7 +19,7 @@ public class StateService implements GeneralService {
   public static final String DATA = "DATA";
   final static Logger logger = Logger.getLogger(StateService.class);
 
-  static ConcurrentHashMap <String,String> messageList = new ConcurrentHashMap<String, String>();
+  static DoubleHashMap <String> messageList = new DoubleHashMap< String>();
 
   public boolean canHandle(String command) {
     if(command == null || "".equals(command)) return false;

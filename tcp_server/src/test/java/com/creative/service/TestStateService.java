@@ -51,10 +51,10 @@ public class TestStateService extends ServiceTest {
     context1.setRequest("{COMMAND:STATE_SET;FROM:X;TO:esp7_4@demo;DATA:OFF}");
     disrupt.push(context1);
     MockContext context2 = new MockContext();
-    context2.setRequest("{COMMAND:STATE_SET;FROM:X;TO:esp7_3@demo;DATA:OFF}");
+    context2.setRequest("{COMMAND:STATE_SET;FROM:X;TO:esp7_3@demo1;DATA:OFF}");
     disrupt.push(context2);
     MockContext context3 = new MockContext();
-    context3.setRequest("{COMMAND:STATE_SET;FROM:X;TO:esp7_2@demo;DATA:OFF}");
+    context3.setRequest("{COMMAND:STATE_SET;FROM:X;TO:esp7_2@demo2;DATA:OFF}");
     disrupt.push(context3);
     try {
       Thread.sleep(100);

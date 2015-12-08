@@ -4,10 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.creative.connector.back_server.Connector;
-import com.creative.connector.back_server.MockConnector;
 import com.creative.connector.back_server.TCPConnector;
 import com.creative.context.DataObjectFactory;
 import com.creative.context.IData;
