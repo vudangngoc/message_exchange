@@ -12,8 +12,10 @@ public class TestDoubleHashMap {
     DoubleHashMap<String> map = new DoubleHashMap<>();
     //When
     map.put("key@key", "value");
+    map.put("key@key1", "value");
+    map.put("key1@key", "value");
     //Then
-    assertEquals(1,map.size());
+    assertEquals(3,map.size());
   }
   
   @Test

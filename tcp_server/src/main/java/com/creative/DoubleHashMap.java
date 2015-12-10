@@ -59,12 +59,12 @@ public class DoubleHashMap <V> implements ConcurrentMap<String,V>{
   public V put(String key, V value) {
     String[] k = key.toString().split("@");
     if(k.length == 2){
-      ConcurrentHashMap<String, V> domain = data.get(k[0]);
+      ConcurrentHashMap<String, V> domain = data.get(k[1]);
       if(domain == null){
         domain = new ConcurrentHashMap<String,V>();
         data.put(k[1], domain);
       }
-      return domain.put(k[1],value);
+      return domain.put(k[0],value);
     }
     return null;
   }
