@@ -14,7 +14,7 @@ public class MainThread {
       test.run();
       round--;
     }
-
+    System.out.println("Success: " + TestThread.success + ", Faile: " + TestThread.faile);
   }
   
   private static String getRandomMessage(){
