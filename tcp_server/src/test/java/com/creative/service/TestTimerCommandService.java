@@ -72,7 +72,7 @@ public class TestTimerCommandService extends ServiceTest {
 
     //Then    
     IData data = DataObjectFactory.createDataObject(context.getResponse());
-    assertEquals(3,data.getList("data").size());
+    assertTrue(3 <= data.getList("data").size());
     context.setRequest("{COMMAND:TIMER_REMOVE_ALL}");
     disrupt.push(context);
   }
