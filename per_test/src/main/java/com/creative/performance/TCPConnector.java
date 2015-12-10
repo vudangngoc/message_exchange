@@ -27,7 +27,6 @@ public class TCPConnector {
   private Socket socket;
   private String host;
   private int port;
-  final static Logger logger = Logger.getLogger(TCPConnector.class);
   /**
    * Setup TCP server properties
    * @param address
@@ -42,9 +41,7 @@ public class TCPConnector {
       socket = new Socket(address, port);
       socket.close();
     } catch (UnknownHostException e) {
-      logger.debug("Cannot resolve host " + host);
     } catch (IOException e) {
-      logger.debug("Cannot create socket");
     }
   }
 
@@ -65,7 +62,6 @@ public class TCPConnector {
 
       bw.write(message);
       bw.flush();
-      logger.debug("Message sent to the server");
 
       //Get the return message from the server
       InputStream is = socket.getInputStream();
@@ -73,7 +69,6 @@ public class TCPConnector {
       BufferedReader br = new BufferedReader(isr);
       String result = br.readLine();
       
-      logger.debug("Message get from the server");
       return result;
     }
     catch (Exception exception)
@@ -89,7 +84,6 @@ public class TCPConnector {
       }
       catch(Exception e)
       {
-        logger.debug("Closing socket faile ",e);
       }
     }
     return "";
