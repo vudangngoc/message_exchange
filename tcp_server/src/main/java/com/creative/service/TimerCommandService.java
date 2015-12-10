@@ -1,12 +1,9 @@
 package com.creative.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import javax.print.attribute.standard.Fidelity;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
@@ -33,14 +30,15 @@ public class TimerCommandService implements GeneralService {
     });
   }
   final static Logger logger = Logger.getLogger(TimerCommandService.class);
-  final static String STATE = "STATE";
-  final static String TIME_FIRE = "TIME_FIRE";
-  final static String TIMER_ID = "TIMER_ID";
-  final static String REPEATLY = "REPEATLY";
-  final static String REPEAT_HOURLY = "REPEAT_HOURLY";
-  final static String REPEAT_DAILY = "REPEAT_DAILY";
-  final static String REPEAT_WEEKLY = "REPEAT_WEEKLY";
-  final static String REPEAT_NONE = "REPEAT_NONE";
+  public final static String STATE = "STATE";
+  public final static String TIME_FIRE = "TIME_FIRE";
+  public final static String TIMER_ID = "TIMER_ID";
+  public final static String REPEATLY = "REPEATLY";
+  public final static String REPEAT_MINUTELY = "REPEAT_MINUTELY";
+  public final static String REPEAT_HOURLY = "REPEAT_HOURLY";
+  public final static String REPEAT_DAILY = "REPEAT_DAILY";
+  public final static String REPEAT_WEEKLY = "REPEAT_WEEKLY";
+  public final static String REPEAT_NONE = "REPEAT_NONE";
   static OrderLinkedList<TimerCommand> queue = new OrderLinkedList<TimerCommand>();
   @Override
   public void onEvent(DisruptorEvent event) throws Exception {
