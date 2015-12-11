@@ -67,18 +67,16 @@ public class TimerCommandService implements GeneralService {
 					request.get(STATE));
 			tc_edit.setCommand(commandToFire);
 			tc_edit.setRepeatType(RepeatType.valueOf(request.get(REPEATLY)));
-			tc_edit.setNextRiseTime(Long.parseLong(request.get(TIME_FIRE)));
+			DateFormat df = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
+			tc_edit.setNextRiseTime(df.parse(request.get(TIME_FIRE)).getTime());
 			queue.add(tc_edit);
 			break;
 		case "TIMER_SET":
 			commandToFire = StateService.createSetStateCommand(request.get(FROM), 
 					request.get(TO), 
 					request.get(STATE));
-			DateFormat df = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
-			long timeMili = Long.parseLong(request.get(TIME_FIRE));
-			String time = df.format(new Date(timeMili));
 			TimerCommand tc = new TimerCommand(commandToFire,
-					time, 
+					request.get(TIME_FIRE), 
 					RepeatType.getRepeatByString(request.get(REPEATLY)));
 			queue.add(tc);
 			result = "{"+ TIMER_ID +":" + tc.getId() + "}";
@@ -158,7 +156,7 @@ public class TimerCommandService implements GeneralService {
 		return null;
 	}
 
-	public static String createAddTimeCommand(String from, String to, String repeat, long time, String state){
+	public static String createAddTimeCommand(String from, String to, String repeat, String time, String state){
 		IData data = DataObjectFactory.createDataObject();
 		data.set(COMMAND, "TIMER_SET");
 		data.set(FROM, from);
@@ -169,7 +167,7 @@ public class TimerCommandService implements GeneralService {
 
 		return data.toString();
 	}
-	public static String createEditTimeCommand(String id, String repeat, long time, String state){
+	public static String createEditTimeCommand(String id, String repeat, String time, String state){
 		IData data = DataObjectFactory.createDataObject();
 		data.set(COMMAND, "TIMER_EDIT");
 		data.set(TIMER_ID, id);
