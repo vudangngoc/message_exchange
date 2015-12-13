@@ -14,8 +14,12 @@ import com.creative.business.TimerBusiness;
 public class RestAPI {
 	TimerBusiness timerBusiness = new TimerBusiness();
 	
-  @RequestMapping("/getTimer")  
-  public @ResponseBody String getTimer(@RequestParam(value="name") String name) {
+  @RequestMapping("/getTimers")  
+  public @ResponseBody String getTimers(@RequestParam(value="name") String name) {
       return timerBusiness.getTimers(name);
+  }
+  @RequestMapping("/getTimer")  
+  public @ResponseBody String getTimer(@RequestParam(value="id") String id) {
+      return timerBusiness.getTimer(id);
   }
 }

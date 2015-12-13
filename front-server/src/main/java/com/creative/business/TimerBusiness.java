@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.security.auth.x500.X500Principal;
+
 import com.creative.connector.back_server.Connector;
 import com.creative.connector.back_server.TCPConnector;
 import com.creative.context.DataObjectFactory;
@@ -20,7 +22,7 @@ public class TimerBusiness {
   private List<IData> timerList = new ArrayList<>();
   public TimerBusiness(){
     if(connector instanceof TCPConnector){
-      ((TCPConnector)connector).setUp("s1.thietbithongminh.info", 10001);
+      ((TCPConnector)connector).setUp("127.0.0.1", 10001);
     }
   }
   
@@ -47,16 +49,20 @@ public class TimerBusiness {
   }
   
   public String getTimers(String deviceName){
+  	refreshData();
   	IData result = DataObjectFactory.createDataObject();
   	if(deviceName == null) return "{}";
+  	List<String> list = new ArrayList<>();
   	for(IData data : timerList){
-  		if(deviceName.equals(data.get(TimerCommandService.TO)))
-  			result.set(data.get(TimerCommandService.TIMER_ID),data.toString());
+  		IData command = DataObjectFactory.createDataObject(data.get(TimerCommandService.COMMAND));
+  		if(deviceName.equals(command.get(TimerCommandService.TO)))
+  			list.add(data.toString());
   	}
+  	result.setList("data", list);
   	return result.toString();
   }
   
-  public boolean updateTimer(String id, RepeatType repeat, long time, String state){
+  public boolean updateTimer(String id, String repeat, String time, String state){
   	connector.sendMessage(TimerCommandService.createEditTimeCommand(id, repeat, time, state));
   	return false;
   }
@@ -65,4 +71,17 @@ public class TimerBusiness {
   	connector.sendMessage(TimerCommandService.createRemoveTimeCommand(id));
   	return false;
   }
+  public boolean createTimer(String from, String to, String repeat, String time, String state){
+  	String message = TimerCommandService.createAddTimeCommand(from, to, repeat, time, state);
+  	connector.sendMessage(message);
+  	return false;
+  }
+
+	public String getTimer(String id) {
+		for(IData data : timerList){
+			if(data.get("TIMER_ID").equals(id))
+				return data.toString();
+		}
+		return null;
+	}
 }

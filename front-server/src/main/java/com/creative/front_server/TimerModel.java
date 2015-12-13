@@ -1,18 +1,15 @@
 package com.creative.front_server;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import com.creative.service.RepeatType;
 
 public class TimerModel {
 	private List<String> deviceList = new ArrayList<>();
 	private String deviceId;
 	private String timerId;
 	private String state;
-	private RepeatType repeatType;
+	private String repeatType;
 	private String time;
 	public List<String> getDeviceList() {
 		return deviceList;
@@ -44,10 +41,10 @@ public class TimerModel {
 	public void setState(String state) {
 		this.state = state;
 	}
-	public RepeatType getRepeatType() {
+	public String getRepeatType() {
 		return repeatType;
 	}
-	public void setRepeatType(RepeatType repeatType) {
+	public void setRepeatType(String repeatType) {
 		this.repeatType = repeatType;
 	}
 	public String getTime() {

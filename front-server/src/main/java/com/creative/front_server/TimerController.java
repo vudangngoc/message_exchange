@@ -1,6 +1,7 @@
 package com.creative.front_server;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,14 +46,27 @@ public class TimerController {
     model.addAttribute("timerModel", sm); 
     return "timer";
   }
+  
   @RequestMapping(value = "/timer", method = RequestMethod.POST)
-  public String state(@ModelAttribute StateModel state,Model model) {
-  	//TimerBusiness.setDeviceState(state.getDeviceId(), state.getState());
-    StateModel sm = new StateModel();
-    //sm.setDeviceList(TimerBusiness.getAllDevice());
-    model.addAttribute("stateModel",  sm);
-    
-    return "state";
+  public String state(@ModelAttribute TimerModel timerModel,Model model,@RequestParam String action) {
+  	switch (action) {
+		case "Create":
+				business.createTimer("WEB_UI", timerModel.getDeviceId(), timerModel.getRepeatType(), timerModel.getTime(), timerModel.getState());
+			break;
+		case "Modify":
+				business.updateTimer(timerModel.getTimerId(), timerModel.getRepeatType(), timerModel.getTime(), timerModel.getState());
+			break;
+		case "Delete":
+			business.deleteTimer(timerModel.getTimerId());
+			break;
+		default:
+			break;
+		}
+    TimerModel sm = new TimerModel();
+    sm.setDeviceList(business.getDevices());
+    sm.setTime(formatter.format(new Date()));
+    model.addAttribute("timerModel", sm); 
+    return "timer";
   }
   
 

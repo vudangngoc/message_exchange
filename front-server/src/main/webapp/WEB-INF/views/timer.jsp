@@ -13,7 +13,7 @@
 		if (window.XMLHttpRequest) {
 			// FireFox, Safari, etc.
 			result = new XMLHttpRequest();
-			if (typeof xmlhttp.overrideMimeType != 'undefined') {
+			if (typeof result.overrideMimeType != 'undefined') {
 				result.overrideMimeType('text/xml'); // Or anything else
 			}
 		} else if (window.ActiveXObject) {
@@ -24,20 +24,53 @@
 		}
 		return result;
 	}
+	function updateTimerList(d){
+		var list = document.getElementById("timerList");
+		while(list.firstChild)
+			list.removeChild(list.firstChild);
+		var objs = JSON.parse(d);
+		var arr = objs['data'];
+		if(arr === undefined) return;
+		for(i = 0; i < arr.length; i++){
+			var jn = JSON.parse(arr[i]);
+			var option = new Option(jn['TIMER_ID'],jn['TIMER_ID']);
+			list.options[list.options.length] = option;
+		}
+	}
 
 	function getTimers(n) {
-		request = '/getTimer?name=' + n;
+		request = './getTimers?name=' + n;
 		var xmlHttp = createRequest();
 		xmlHttp.onreadystatechange = function() {
-			if (req.readyState != 4)
+			if (xmlHttp.readyState != 4)
 				return; // Not there yet
-			if (req.status != 200) {
+			if (xmlHttp.status != 200) {
 				// Handle request failure here...
 				return;
 			}
 			// Request successful, read the response
-			var resp = req.responseText;
-			// ... and use it as needed by your app.
+			var resp = xmlHttp.responseText;
+			updateTimerList(resp);
+		}
+		xmlHttp.open("GET", request, true);
+		xmlHttp.send();
+	}
+	function updateTimerDetail(t){
+		var data = JSON.parse(t);
+	}
+	function getTimer(n) {
+		request = './getTimer?id=' + n;
+		var xmlHttp = createRequest();
+		xmlHttp.onreadystatechange = function() {
+			if (xmlHttp.readyState != 4)
+				return; // Not there yet
+			if (xmlHttp.status != 200) {
+				// Handle request failure here...
+				return;
+			}
+			// Request successful, read the response
+			var resp = xmlHttp.responseText;
+			updateTimerDetail(resp);
 		}
 		xmlHttp.open("GET", request, true);
 		xmlHttp.send();
@@ -49,7 +82,8 @@
 		<div>
 			<div style="display: inline;">Select device</div>
 			<div style="display: inline;">
-				<form:select path="deviceId" multiple="false">
+				<form:select path="deviceId" multiple="false" onchange="getTimers(this.value)">
+					<form:option value="">-------------</form:option>
 					<form:options items="${timerModel.getDeviceList()}" />
 				</form:select>
 			</div>
@@ -61,7 +95,7 @@
 		<div>
 			<div style="display: inline;">Select timer</div>
 			<div style="display: inline;">
-				<form:select id="timerList" path="timerId">
+				<form:select id="timerList" path="timerId" onchange="getTimer(this.value)">
 				</form:select>
 			</div>
 		</div>
@@ -91,8 +125,13 @@
 					<form:option value="OFF">OFF</form:option>
 				</form:select>
 			</div>
+			</div>
+			<div>
 			<div style="display: inline;">
-				<input type="submit" value="Submit" name="action" />
+				
+				<input type="submit" name="action" value="Create" />
+				<input type="submit" name="action" value="Modify" />
+				<input type="submit" name="action" value="Delete" />
 			</div>
 		</div>
 	</form:form>
