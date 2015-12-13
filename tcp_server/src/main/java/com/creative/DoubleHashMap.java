@@ -47,9 +47,9 @@ public class DoubleHashMap <V> implements ConcurrentMap<String,V>{
   public V get(Object key) {
     String[] k = key.toString().split("@");
     if(k.length == 2){
-      ConcurrentHashMap<String, V> domain = data.get(k[0]);
+      ConcurrentHashMap<String, V> domain = data.get(k[1]);
       if(domain != null){
-        return domain.get(k[1]);
+        return domain.get(k[0]);
       }
     }
     return null;
