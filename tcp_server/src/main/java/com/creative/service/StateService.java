@@ -41,6 +41,7 @@ public class StateService implements GeneralService {
         if(result == null || "".equals(result)){
           result = createSetStateCommand(request.get(FROM),request.get(TO),request.get(DATA));
           messageList.put(request.get(TO), result);
+          logger.debug("Device " + request.get(TO) + " connect the first time");
         }
         break;
       case "STATE_INFO":
