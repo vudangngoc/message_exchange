@@ -6,7 +6,7 @@ package com.creative.context;
  *
  * Nov 27, 2015
  */
-@Deprecated
+
 public class DataObjectFactory {
   public static IData createDataObject(){
     return new JsonData();

@@ -89,6 +89,7 @@ public class OrderLinkedList<T extends Comparable<T>> {
   }
 
   public T getAndRemoveSimilar(T object){
+  	if(head == null || size < 1) return null;
     Item temp = head;
     if(head != null && head.getData().equals(object))
       return removeHead();

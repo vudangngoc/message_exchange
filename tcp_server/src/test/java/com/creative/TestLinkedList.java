@@ -32,6 +32,7 @@ public class TestLinkedList {
     OrderLinkedList<Item> list = new OrderLinkedList<>();
     //When
     list.add(new Item(3));
+    list.getAndRemoveSimilar(new Item(3));
     list.add(new Item(1));
     list.add(new Item(2));
     list.add(new Item(4));
@@ -39,7 +40,7 @@ public class TestLinkedList {
     //Then
     Item head1 = list.getAndRemoveSimilar(new Item(2));
     assertEquals(2,head1.data);
-    assertEquals(4,list.getSize());
+    assertEquals(3,list.getSize());
 
   }
   @Test

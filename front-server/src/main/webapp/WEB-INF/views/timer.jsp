@@ -31,6 +31,8 @@
 		var objs = JSON.parse(d);
 		var arr = objs['data'];
 		if(arr === undefined) return;
+		var tem = new Option('-----------','--------');
+		list.options[list.options.length] = tem;
 		for(i = 0; i < arr.length; i++){
 			var jn = JSON.parse(arr[i]);
 			var option = new Option(jn['TIMER_ID'],jn['TIMER_ID']);
@@ -57,6 +59,13 @@
 	}
 	function updateTimerDetail(t){
 		var data = JSON.parse(t);
+		var repeat = data["REPEATLY"];
+		var time = data["TIME_FIRE"];
+		var command = JSON.parse(data["COMMAND"]);
+		var state = command["DATA"];
+		document.getElementById("repeatType").value = repeat;
+		document.getElementById("time").value = time;
+		document.getElementById("state").value = state;
 	}
 	function getTimer(n) {
 		request = './getTimer?id=' + n;
@@ -102,25 +111,25 @@
 		<div>
 			<div style="display: inline;">Select repeat type</div>
 			<div style="display: inline;">
-				<form:select path="repeatType">
-					<form:option value="REPEAT_NONE">REPEAT_NONE</form:option>
+				<form:select id="repeatType" path="repeatType">					
 					<form:option value="REPEAT_MINUTELY">REPEAT_MINUTELY</form:option>
 					<form:option value="REPEAT_HOURLY">REPEAT_HOURLY</form:option>
 					<form:option value="REPEAT_DAILY">REPEAT_DAILY</form:option>
 					<form:option value="REPEAT_WEEKLY">REPEAT_WEEKLY</form:option>
+					<form:option value="REPEAT_NONE">REPEAT_NONE</form:option>
 				</form:select>
 			</div>
 		</div>
 		<div>
 					<div style="display: inline;">Set time</div>
 			<div style="display: inline;">
-				<form:input type="text" path="time"/>
+				<form:input id="time" type="text" path="time"/>
 			</div>
 		</div>
 		<div>
 			<div style="display: inline;">Set state of device</div>
 			<div style="display: inline;">
-				<form:select path="state">
+				<form:select id="state" path="state">
 					<form:option value="ON">ON</form:option>
 					<form:option value="OFF">OFF</form:option>
 				</form:select>

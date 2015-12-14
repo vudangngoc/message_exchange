@@ -1,10 +1,12 @@
 package com.creative.service;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -43,6 +45,25 @@ public class TimerCommandService implements GeneralService {
 	public final static String REPEAT_WEEKLY = "REPEAT_WEEKLY";
 	public final static String REPEAT_NONE = "REPEAT_NONE";
 	static OrderLinkedList<TimerCommand> queue = new OrderLinkedList<TimerCommand>();
+	
+	private TimerCommand editTimeCommand(IData request, TimerCommand origin){
+		TimerCommand result = new TimerCommand();
+		result.setId(request.get(TIMER_ID));
+		IData oldCommand = DataObjectFactory.createDataObject(origin.getCommand());
+		String commandToFire = StateService.createSetStateCommand(oldCommand.get(FROM), 
+				oldCommand.get(TO), 
+				request.get(STATE));
+		result.setCommand(commandToFire);
+		result.setRepeatType(RepeatType.valueOf(request.get(REPEATLY)));
+		DateFormat df = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
+		try {
+			result.setNextRiseTime(df.parse(request.get(TIME_FIRE)).getTime());
+		} catch (ParseException e) {
+			
+			return null;
+		}
+		return result;
+	}
 	@Override
 	public void onEvent(DisruptorEvent event) throws Exception {
 		//{FROM:XXX;COMMAND:TIMER_XXX;TO:XXX;STATE:xxx;TIME_FIRE:XXXX;REPEATLY:XXXX}}
@@ -56,34 +77,30 @@ public class TimerCommandService implements GeneralService {
 		}
 		if(!canHandle(command)) return;
 		String result = "";
-		String commandToFire;
+		TimerCommand temp = new TimerCommand();
 		switch(command){
 		case "TIMER_EDIT":
-			TimerCommand tc_edit = new TimerCommand();
-			tc_edit.setId(request.get(TIMER_ID));
-			tc_edit = queue.getAndRemoveSimilar(tc_edit);
-			commandToFire = StateService.createSetStateCommand(request.get(FROM), 
-					request.get(TO), 
-					request.get(STATE));
-			tc_edit.setCommand(commandToFire);
-			tc_edit.setRepeatType(RepeatType.valueOf(request.get(REPEATLY)));
-			DateFormat df = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
-			tc_edit.setNextRiseTime(df.parse(request.get(TIME_FIRE)).getTime());
-			queue.add(tc_edit);
-			break;
+			temp.setId(request.get(TIMER_ID));
+			temp = queue.getAndRemoveSimilar(temp);
+			TimerCommand editResult = editTimeCommand(request, temp);
+			if(editResult != null)
+				queue.add(editResult);
+			else
+				queue.add(temp);
+			result = convertString(editResult);
+			break;			
 		case "TIMER_SET":
-			commandToFire = StateService.createSetStateCommand(request.get(FROM), 
+			String commandToFire = StateService.createSetStateCommand(request.get(FROM), 
 					request.get(TO), 
 					request.get(STATE));
-			TimerCommand tc = new TimerCommand(commandToFire,
+			temp = new TimerCommand(commandToFire,
 					request.get(TIME_FIRE), 
 					RepeatType.getRepeatByString(request.get(REPEATLY)));
-			queue.add(tc);
-			result = "{"+ TIMER_ID +":" + tc.getId() + "}";
+			queue.add(temp);
+			result = "{"+ TIMER_ID +":" + temp.getId() + "}";
 			break;
 		case "TIMER_REMOVE":
 			//delete a timer
-			TimerCommand temp = new TimerCommand();
 			temp.setId(request.get(TIMER_ID));
 			temp = queue.getAndRemoveSimilar(temp);
 			if(temp != null) result = convertString(temp);
@@ -133,10 +150,12 @@ public class TimerCommandService implements GeneralService {
 	}
 
 	public String convertString(TimerCommand timer){
+		DateFormat df = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
 		IData data = DataObjectFactory.createDataObject();
 		data.set(TIMER_ID, timer.getId());
 		data.set(COMMAND, timer.getCommand());
-		data.set(TIME_FIRE, timer.getNextRiseTime() + "");
+		data.set(TIME_FIRE, df.format(new Date(timer.getNextRiseTime())));
+		data.set(REPEATLY, timer.getRepeatType().toString());
 		return data.toString();
 	}
 	@Override
