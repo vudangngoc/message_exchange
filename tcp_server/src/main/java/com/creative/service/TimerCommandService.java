@@ -47,6 +47,7 @@ public class TimerCommandService implements GeneralService {
 	static OrderLinkedList<TimerCommand> queue = new OrderLinkedList<TimerCommand>();
 	
 	private TimerCommand editTimeCommand(IData request, TimerCommand origin){
+	  if(origin == null || request == null) return null;
 		TimerCommand result = new TimerCommand();
 		result.setId(request.get(TIMER_ID));
 		IData oldCommand = DataObjectFactory.createDataObject(origin.getCommand());
@@ -83,11 +84,12 @@ public class TimerCommandService implements GeneralService {
 			temp.setId(request.get(TIMER_ID));
 			temp = queue.getAndRemoveSimilar(temp);
 			TimerCommand editResult = editTimeCommand(request, temp);
-			if(editResult != null)
-				queue.add(editResult);
+			if(editResult != null){
+			  queue.add(editResult);
+			  result = convertString(editResult);
+			}
 			else
-				queue.add(temp);
-			result = convertString(editResult);
+				queue.add(temp);			
 			break;			
 		case "TIMER_SET":
 			String commandToFire = StateService.createSetStateCommand(request.get(FROM), 
@@ -97,7 +99,7 @@ public class TimerCommandService implements GeneralService {
 					request.get(TIME_FIRE), 
 					RepeatType.getRepeatByString(request.get(REPEATLY)));
 			queue.add(temp);
-			result = "{"+ TIMER_ID +":" + temp.getId() + "}";
+			result = "{\""+ TIMER_ID +"\":\"" + temp.getId() + "\"}";
 			break;
 		case "TIMER_REMOVE":
 			//delete a timer
@@ -131,10 +133,11 @@ public class TimerCommandService implements GeneralService {
 				TimerCommand.updateCurrent();
 				if(queue.getHead().getRemainTime() <= 0) {
 					while(queue.getSize() > 0 && queue.getHead().getRemainTime() <=0){
-						TimerCommand comm = queue.removeHead();
+						TimerCommand comm = queue.getHead();
 						logger.debug("Set STATE command: " + comm.getCommand());
 						ClientHandler.disrupt.push(new Context(null,comm.getCommand()));
 						comm.updateNextTime();
+						queue.removeHead();
 						if(comm.getRemainTime() > 0) {
 							queue.add(comm);
 							logger.debug("Readd to queue and fire after " + comm.getRemainTime() + "ms");
@@ -150,6 +153,7 @@ public class TimerCommandService implements GeneralService {
 	}
 
 	public String convertString(TimerCommand timer){
+	  if(timer == null) return "";
 		DateFormat df = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
 		IData data = DataObjectFactory.createDataObject();
 		data.set(TIMER_ID, timer.getId());
