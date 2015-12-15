@@ -44,6 +44,7 @@ public class TimerController {
     sm.setDeviceList(business.getDevices());
     sm.setTime(formatter.format(new Date()));
     model.addAttribute("timerModel", sm); 
+    model.addAttribute("size", business.getNumberTimers());
     return "timer";
   }
   
@@ -66,6 +67,7 @@ public class TimerController {
     sm.setDeviceList(business.getDevices());
     sm.setTime(formatter.format(new Date()));
     model.addAttribute("timerModel", sm); 
+    model.addAttribute("size", business.getNumberTimers());
     return "timer";
   }
   

@@ -24,6 +24,7 @@ public class TimerBusiness {
     if(connector instanceof TCPConnector){
       ((TCPConnector)connector).setUp("127.0.0.1", 10001);
     }
+    refreshData();
   }
   
   public void refreshData(){
@@ -40,7 +41,9 @@ public class TimerBusiness {
   		}
   	} 
   }
-  
+  public int getNumberTimers(){
+  	return timerList.size();
+  }
   public List<String> getDevices(){
   	Collection<String> result = stateBusiness.getAllDevice().keySet();
   	List<String> r = new ArrayList<>();
