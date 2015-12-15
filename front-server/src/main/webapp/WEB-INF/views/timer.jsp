@@ -124,7 +124,7 @@
 		<div>
 					<div style="display: inline;">Set time</div>
 			<div style="display: inline;">
-				<form:input id="time" type="text" path="time"/>
+				<form:input id="time" type="text" cssStyle="width:200px" path="time"/>
 			</div>
 		</div>
 		<div>

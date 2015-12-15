@@ -6,9 +6,7 @@ import org.junit.Test;
 import com.creative.GlobalConfig;
 import com.creative.context.DataObjectFactory;
 import com.creative.context.IData;
-import com.creative.disruptor.DisruptorHandler;
 import com.creative.disruptor.MortalHandler;
-import com.creative.server.ClientHandler;
 
 public class TestTimerCommandService extends ServiceTest {
 

@@ -83,13 +83,13 @@ public class TimerCommandService implements GeneralService {
 		case "TIMER_EDIT":
 			temp.setId(request.get(TIMER_ID));
 			temp = queue.getAndRemoveSimilar(temp);
-			TimerCommand editResult = editTimeCommand(request, temp);
-			if(editResult != null){
-			  queue.add(editResult);
-			  result = convertString(editResult);
-			}
-			else
-				queue.add(temp);			
+			if(temp != null){
+				TimerCommand editResult = editTimeCommand(request, temp);
+				if(editResult != null){
+					queue.add(editResult);
+					result = convertString(editResult);
+					}
+			}			
 			break;			
 		case "TIMER_SET":
 			String commandToFire = StateService.createSetStateCommand(request.get(FROM), 
@@ -106,7 +106,6 @@ public class TimerCommandService implements GeneralService {
 			temp.setId(request.get(TIMER_ID));
 			temp = queue.getAndRemoveSimilar(temp);
 			if(temp != null) result = convertString(temp);
-			else result = "{}";
 			break;
 		case "TIMER_REMOVE_ALL":
 			//delete all timer
