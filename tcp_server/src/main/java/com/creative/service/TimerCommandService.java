@@ -140,7 +140,8 @@ public class TimerCommandService implements GeneralService {
 						if(comm.getRemainTime() > 0) {
 							queue.add(comm);
 							logger.debug("Readd to queue and fire after " + comm.getRemainTime() + "ms");
-						}
+						}else
+						  logger.debug("Out of time or there is something wrong: " + comm.getRemainTime() + "ms");
 
 					}
 				}
