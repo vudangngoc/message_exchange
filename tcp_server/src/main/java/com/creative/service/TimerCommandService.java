@@ -146,10 +146,9 @@ public class TimerCommandService implements GeneralService {
 						}else
 							logger.debug("Out of time or there is something wrong: " + comm.getRemainTime() + "ms");
 					}
+					start = System.nanoTime() - start;
+					logger.debug("Check timer take " + start + " nano second for this round");
 				}
-				start = System.nanoTime() - start;
-				logger.debug("Check timer take " + start + " nano second for this round");
-
 			} catch (InterruptedException e) {
 				break;
 			}
