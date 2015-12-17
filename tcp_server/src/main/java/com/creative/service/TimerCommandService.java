@@ -34,6 +34,7 @@ public class TimerCommandService implements GeneralService {
 			}
 		});
 	}
+	
 	final static Logger logger = Logger.getLogger(TimerCommandService.class);
 	public final static String STATE = "STATE";
 	public final static String TIME_FIRE = "TIME_FIRE";
@@ -45,9 +46,9 @@ public class TimerCommandService implements GeneralService {
 	public final static String REPEAT_WEEKLY = "REPEAT_WEEKLY";
 	public final static String REPEAT_NONE = "REPEAT_NONE";
 	static OrderLinkedList<TimerCommand> queue = new OrderLinkedList<TimerCommand>();
-	
+
 	private TimerCommand editTimeCommand(IData request, TimerCommand origin){
-	  if(origin == null || request == null) return null;
+		if(origin == null || request == null) return null;
 		TimerCommand result = new TimerCommand();
 		result.setId(request.get(TIMER_ID));
 		IData oldCommand = DataObjectFactory.createDataObject(origin.getCommand());
@@ -60,11 +61,12 @@ public class TimerCommandService implements GeneralService {
 		try {
 			result.setNextRiseTime(df.parse(request.get(TIME_FIRE)).getTime());
 		} catch (ParseException e) {
-			
+
 			return null;
 		}
 		return result;
 	}
+	
 	@Override
 	public void onEvent(DisruptorEvent event) throws Exception {
 		//{FROM:XXX;COMMAND:TIMER_XXX;TO:XXX;STATE:xxx;TIME_FIRE:XXXX;REPEATLY:XXXX}}
@@ -88,7 +90,7 @@ public class TimerCommandService implements GeneralService {
 				if(editResult != null){
 					queue.add(editResult);
 					result = convertString(editResult);
-					}
+				}
 			}			
 			break;			
 		case "TIMER_SET":
@@ -124,16 +126,17 @@ public class TimerCommandService implements GeneralService {
 		if(command == null || "".equals(command)) return false;
 		return command.startsWith("TIMER_");
 	}
+	
 	private void checkTimer(){
 		while(true){
 			try {
 				Thread.sleep(500);
 				if(queue.getHead() == null) continue;
+				long start = System.nanoTime();
 				TimerCommand.updateCurrent();
 				if(queue.getHead().getRemainTime() <= 0) {
 					while(queue.getSize() > 0 && queue.getHead().getRemainTime() <=0){
 						TimerCommand comm = queue.getHead();
-						logger.debug("Set STATE command: " + comm.getCommand());
 						ClientHandler.disrupt.push(new Context(null,comm.getCommand()));
 						comm.updateNextTime();
 						queue.removeHead();
@@ -141,19 +144,20 @@ public class TimerCommandService implements GeneralService {
 							queue.add(comm);
 							logger.debug("Readd to queue and fire after " + comm.getRemainTime() + "ms");
 						}else
-						  logger.debug("Out of time or there is something wrong: " + comm.getRemainTime() + "ms");
-
+							logger.debug("Out of time or there is something wrong: " + comm.getRemainTime() + "ms");
 					}
 				}
+				start = System.nanoTime() - start;
+				logger.debug("Check timer take " + start + " nano second for this round");
+
 			} catch (InterruptedException e) {
 				break;
 			}
-
 		}
 	}
 
 	public String convertString(TimerCommand timer){
-	  if(timer == null) return "";
+		if(timer == null) return "";
 		DateFormat df = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
 		IData data = DataObjectFactory.createDataObject();
 		data.set(TIMER_ID, timer.getId());
@@ -162,6 +166,7 @@ public class TimerCommandService implements GeneralService {
 		data.set(REPEATLY, timer.getRepeatType().toString());
 		return data.toString();
 	}
+	
 	@Override
 	public String getStatus() {
 		List<TimerCommand> list = queue.getAll();
@@ -187,9 +192,9 @@ public class TimerCommandService implements GeneralService {
 		data.set(STATE, state);
 		data.set(REPEATLY, repeat);
 		data.set(TIME_FIRE, time + "");
-
 		return data.toString();
 	}
+	
 	public static String createEditTimeCommand(String id, String repeat, String time, String state){
 		IData data = DataObjectFactory.createDataObject();
 		data.set(COMMAND, "TIMER_EDIT");
@@ -197,20 +202,19 @@ public class TimerCommandService implements GeneralService {
 		data.set(STATE, state);
 		data.set(REPEATLY, repeat);
 		data.set(TIME_FIRE, time + "");
-
 		return data.toString();
 	}
+	
 	public static String createRemoveTimeCommand(String id){
 		IData data = DataObjectFactory.createDataObject();
 		data.set(COMMAND, "TIMER_REMOVE");
 		data.set(TIMER_ID, id);
-
 		return data.toString();
 	}
+	
 	public static String createListTimeCommand(){
 		IData data = DataObjectFactory.createDataObject();
 		data.set(COMMAND, "TIMER_LIST");
-
 		return data.toString();
 	}
 }
