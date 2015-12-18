@@ -2,6 +2,10 @@ package com.creative.service;
 
 import static org.junit.Assert.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.junit.Test;
 import com.creative.GlobalConfig;
 import com.creative.context.DataObjectFactory;
@@ -50,14 +54,16 @@ public class TestTimerCommandService extends ServiceTest {
 	public void testTimerList(){
 		System.out.println("testTimerList");
 		//Given
+		DateFormat df = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
 		MockContext context = new MockContext();
-		context.setRequest("{COMMAND:TIMER_SET;FROM:esp7@demo;TO:esp7@demo;STATE:OFF;"
-				+ "TIME_FIRE:2015-NOV-28 21-58-01 +0700;REPEATLY:REPEAT_HOURLY}");
+		context.setRequest(TimerCommandService.createAddTimeCommand(
+		    "from", "to", RepeatType.REPEAT_MINUTELY.name(), 
+		    df.format(new Date()), "ON"));
 		disrupt.push(context);
 		disrupt.push(context);
 		disrupt.push(context);
 		try {
-			Thread.sleep(100);
+			Thread.sleep(1000000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

@@ -77,6 +77,12 @@ public class TimerCommand implements Comparable<TimerCommand>{
   public void setRemainTime(long time){
     this.nextRiseTime = now + time;
   }
+  
+  @Override
+  public String toString(){
+    return id;
+  }
+  
   @Override
   public boolean equals(Object e){
     if(e instanceof TimerCommand){

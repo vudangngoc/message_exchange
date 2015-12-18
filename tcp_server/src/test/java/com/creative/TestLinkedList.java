@@ -2,6 +2,7 @@ package com.creative;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.Random;
 
 import org.junit.Test;
 
@@ -96,6 +97,20 @@ public class TestLinkedList {
     assertEquals(3,temp.get(3).data);
     assertEquals(4,temp.get(4).data);
   }
+  
+  @Test
+  public void testInsertFrom(){
+    //Given
+    OrderLinkedList<Item> list = new OrderLinkedList<>();
+    Random rand = new Random();
+    //When
+    for(int i = 0;i<5000;i++)
+      list.add(new Item(rand.nextInt((500 - 0) + 1)));
+    //Then    
+    assertEquals(100,list.updateShortcut());
+    assertEquals(5000,list.getSize());
+  }
+  
   @Test
   public void testUpdateShortcut(){
     //Given
@@ -104,7 +119,7 @@ public class TestLinkedList {
     for(int i = 0;i<500;i++)
       list.add(new Item(i));
     //Then		
-    assertEquals(5,list.updateShortcut());
+    assertEquals(10,list.updateShortcut());
   }
 
   private static class Item implements Comparable<Item>{

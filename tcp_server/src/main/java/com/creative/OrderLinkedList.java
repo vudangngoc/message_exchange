@@ -9,9 +9,10 @@ public class OrderLinkedList<T extends Comparable<T>> {
     this.size = 0;
   }
 
-  public static int PARTITION_SIZE = 100;
+  public static int PARTITION_SIZE = 50;
   private Item head;
   private List<Item> shortcut;
+  private int lastUpdate = 0;
   private int size;
   public int getSize(){
     return size;
@@ -41,6 +42,7 @@ public class OrderLinkedList<T extends Comparable<T>> {
   }
 
   private boolean insertFrom(OrderLinkedList<T>.Item item, T data) {
+    System.out.println("Inserting from item: " + item.data.toString());
     if(item.getData().compareTo(data) > 0) return false;
     Item temp = item;
     while(temp.getNext() != null && temp.getNext().getData().compareTo(data) < 0){
@@ -54,6 +56,9 @@ public class OrderLinkedList<T extends Comparable<T>> {
       temp.setNext(temp2);			
     }
     size++;
+    lastUpdate++;
+    if(lastUpdate > PARTITION_SIZE)
+      updateShortcut();
     return true;
   }
 
@@ -106,6 +111,7 @@ public class OrderLinkedList<T extends Comparable<T>> {
   }
 
   public int updateShortcut(){
+    System.out.println("Updatting shortcut");
     Item temp = head;
     int count = 0;
     shortcut.clear();
@@ -115,6 +121,7 @@ public class OrderLinkedList<T extends Comparable<T>> {
       count ++;
       temp = temp.getNext();
     }
+    lastUpdate = 0;
     return shortcut.size();
   }
 
