@@ -34,16 +34,14 @@ public class OrderLinkedList<T extends Comparable<T>> {
     }
     for(int index = 1; index < shortcut.size(); index ++){
       if(shortcut.get(index).getData().compareTo(data) > 0){
-        insertFrom(shortcut.get(index - 1),data);
-        return true;
+        return insertFrom(shortcut.get(index - 1),data);
       }
     }
-    insertFrom(shortcut.get(shortcut.size() - 1), data);
-    return true;
+    return insertFrom(shortcut.get(shortcut.size() - 1), data);
   }
 
-  private void insertFrom(OrderLinkedList<T>.Item item, T data) {
-    if(item.getData().compareTo(data) > 0) return;
+  private boolean insertFrom(OrderLinkedList<T>.Item item, T data) {
+    if(item.getData().compareTo(data) > 0) return false;
     Item temp = item;
     while(temp.getNext() != null && temp.getNext().getData().compareTo(data) < 0){
       temp = temp.getNext();
@@ -56,6 +54,7 @@ public class OrderLinkedList<T extends Comparable<T>> {
       temp.setNext(temp2);			
     }
     size++;
+    return true;
   }
 
   public T removeHead(){

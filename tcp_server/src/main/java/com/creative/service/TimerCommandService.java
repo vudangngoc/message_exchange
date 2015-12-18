@@ -132,22 +132,19 @@ public class TimerCommandService implements GeneralService {
 			try {
 				Thread.sleep(500);
 				if(queue.getHead() == null) continue;
-				long start = System.nanoTime();
 				TimerCommand.updateCurrent();
 				if(queue.getHead().getRemainTime() <= 0) {
 					while(queue.getSize() > 0 && queue.getHead().getRemainTime() <=0){
 						TimerCommand comm = queue.getHead();
+						logger.debug("Processing timer: " + comm.getId());
 						ClientHandler.disrupt.push(new Context(null,comm.getCommand()));
 						comm.updateNextTime();
 						queue.removeHead();
-						if(comm.getRemainTime() > 0) {
-							queue.add(comm);
+						if(comm.getRemainTime() > 0 && queue.add(comm)) {
 							logger.debug("Readd to queue and fire after " + comm.getRemainTime() + "ms");
 						}else
 							logger.debug("Out of time or there is something wrong: " + comm.getRemainTime() + "ms");
 					}
-					start = System.nanoTime() - start;
-					logger.debug("Check timer take " + start + " nano second for this round");
 				}
 			} catch (InterruptedException e) {
 				break;
