@@ -8,6 +8,7 @@
 <title>Manage devices states</title>
 </head>
 <body>
+  <jsp:include page="./menu.jsp" />
 	<form:form method="POST" action="./state" modelAttribute="stateModel">
 		<div>
 			<div style="display: inline;">Select device</div>

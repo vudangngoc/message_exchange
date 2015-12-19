@@ -22,7 +22,7 @@ public class TimerBusiness {
   private List<IData> timerList = new ArrayList<>();
   public TimerBusiness(){
     if(connector instanceof TCPConnector){
-      ((TCPConnector)connector).setUp("s1.thietbithongminh.info", 10001);
+      ((TCPConnector)connector).setUp("127.0.0.1", 10001);
     }
     refreshData();
   }
@@ -48,6 +48,7 @@ public class TimerBusiness {
   	Collection<String> result = stateBusiness.getAllDevice().keySet();
   	List<String> r = new ArrayList<>();
   	result.forEach(x -> r.add(x));
+  	refreshData();
   	return r;
   }
   
@@ -77,6 +78,7 @@ public class TimerBusiness {
   public boolean createTimer(String from, String to, String repeat, String time, String state){
   	String message = TimerCommandService.createAddTimeCommand(from, to, repeat, time, state);
   	connector.sendMessage(message);
+  	refreshData();
   	return false;
   }
 

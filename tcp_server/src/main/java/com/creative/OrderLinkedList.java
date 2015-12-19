@@ -20,6 +20,9 @@ public class OrderLinkedList<T extends Comparable<T>> {
 
   public boolean add(T data){
     if(data == null) return false;
+    lastUpdate++;
+    if(lastUpdate > PARTITION_SIZE)
+      updateShortcut();
     if(head == null) {
       head = new Item(data);
       shortcut.add(head);
@@ -29,7 +32,7 @@ public class OrderLinkedList<T extends Comparable<T>> {
       Item temp = new Item(data);
       temp.setNext(head);
       head = temp;
-      shortcut.add(0, head);
+      shortcut.set(0, head);
       size++;
       return true;
     }
@@ -55,9 +58,6 @@ public class OrderLinkedList<T extends Comparable<T>> {
       temp.setNext(temp2);			
     }
     size++;
-    lastUpdate++;
-    if(lastUpdate > PARTITION_SIZE)
-      updateShortcut();
     return true;
   }
 
@@ -107,6 +107,9 @@ public class OrderLinkedList<T extends Comparable<T>> {
         T data = temp.getNext().getData();
         temp.setNext(temp.getNext().getNext());
         size--;
+        for(int i = 0; i < shortcut.size();i++)
+        	if(shortcut.get(i).equals(data))
+        		shortcut.remove(i);
         return data;
       }
       if(temp.getNext().getNext() != null) temp = temp.getNext();

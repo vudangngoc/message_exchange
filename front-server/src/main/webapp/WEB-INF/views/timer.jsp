@@ -88,6 +88,7 @@
 </script>
 </head>
 <body>
+  <jsp:include page="./menu.jsp" />
 	<form:form method="POST" action="./timer" modelAttribute="timerModel">
 		<div>
 			<div style="display: inline;">Select device</div>

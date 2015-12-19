@@ -16,7 +16,7 @@ public class StateBusiness {
   
   public StateBusiness(){
     if(connector instanceof TCPConnector){
-      ((TCPConnector)connector).setUp("s1.thietbithongminh.info", 10001);
+      ((TCPConnector)connector).setUp("127.0.0.1", 10001);
     }
   }
   
@@ -29,7 +29,7 @@ public class StateBusiness {
   		IData data = DataObjectFactory.createDataObject();
   		for(String s:listResult){
   			data.setData(s);
-  			result.put(data.get(StateService.TO), data.toString());
+  			result.put(data.get(StateService.TO), data.get(StateService.TO) + ": " + data.get(StateService.DATA));
   		}
   	} 
   	return result;
