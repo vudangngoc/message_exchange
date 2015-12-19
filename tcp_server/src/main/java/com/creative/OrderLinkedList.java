@@ -42,7 +42,6 @@ public class OrderLinkedList<T extends Comparable<T>> {
   }
 
   private boolean insertFrom(OrderLinkedList<T>.Item item, T data) {
-    System.out.println("Inserting from item: " + item.data.toString());
     if(item.getData().compareTo(data) > 0) return false;
     Item temp = item;
     while(temp.getNext() != null && temp.getNext().getData().compareTo(data) < 0){
@@ -72,6 +71,10 @@ public class OrderLinkedList<T extends Comparable<T>> {
       head.setNext(null);
       head = temp;
       size--;
+      if(head == null)
+      	shortcut.clear();
+      else
+      	shortcut.set(0,head);
       return data;
     }
   }
@@ -97,6 +100,8 @@ public class OrderLinkedList<T extends Comparable<T>> {
     Item temp = head;
     if(head != null && head.getData().equals(object))
       return removeHead();
+    if(head.getNext() == null && ! head.getData().equals(object))
+    	return null;
     while(true){
       if(temp.getNext().getData() != null && temp.getNext().getData().equals(object)){
         T data = temp.getNext().getData();
@@ -111,7 +116,6 @@ public class OrderLinkedList<T extends Comparable<T>> {
   }
 
   public int updateShortcut(){
-    System.out.println("Updatting shortcut");
     Item temp = head;
     int count = 0;
     shortcut.clear();

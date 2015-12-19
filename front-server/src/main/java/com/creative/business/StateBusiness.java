@@ -16,7 +16,7 @@ public class StateBusiness {
   
   public StateBusiness(){
     if(connector instanceof TCPConnector){
-      ((TCPConnector)connector).setUp("127.0.0.1", 10001);
+      ((TCPConnector)connector).setUp("s1.thietbithongminh.info", 10001);
     }
   }
   
