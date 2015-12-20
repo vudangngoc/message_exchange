@@ -60,7 +60,7 @@ public class TimerCommand implements Comparable<TimerCommand>{
   }
 
   public long getRemainTime(){
-  	logger.debug("Get remain time of " + this.id);
+  	logger.debug("Get remain time of " + this.id + ":" + (this.nextRiseTime - now));
     return this.nextRiseTime - now;
   }
 

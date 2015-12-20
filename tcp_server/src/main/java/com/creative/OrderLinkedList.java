@@ -12,7 +12,7 @@ public class OrderLinkedList<T extends Comparable<T>> {
   public OrderLinkedList(){
     shortcut = new ArrayList<OrderLinkedList<T>.Item>();
     this.size = 0;
-    logger.setLevel(Level.INFO);
+    logger.setLevel(Level.DEBUG);
   }
   final static Logger logger = Logger.getLogger(MortalHandler.class);
   public static int PARTITION_SIZE = 50;
@@ -51,7 +51,7 @@ public class OrderLinkedList<T extends Comparable<T>> {
   }
 
   private boolean insertFrom(OrderLinkedList<T>.Item item, T data) {
-  	logger.debug("Insert item " + data.toString() + " from " + item.toString());
+  	logger.debug("Insert item " + data.toString() + " from " + item.data.toString());
     if(item.getData().compareTo(data) > 0) return false;
     Item temp = item;
     while(temp.getNext() != null && temp.getNext().getData().compareTo(data) < 0){
