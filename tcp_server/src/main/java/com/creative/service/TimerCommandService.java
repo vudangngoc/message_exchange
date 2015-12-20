@@ -20,8 +20,7 @@ import com.creative.disruptor.DisruptorEvent;
 public class TimerCommandService implements GeneralService {
 	public TimerCommandService(){
 		//init checkTimer
-		Thread thread = new Thread(new TimerCommandWDT(queue)); 
-		thread.start();
+
 		logger.setLevel(Level.DEBUG);
 	}
 	
@@ -36,6 +35,10 @@ public class TimerCommandService implements GeneralService {
 	public final static String REPEAT_WEEKLY = "REPEAT_WEEKLY";
 	public final static String REPEAT_NONE = "REPEAT_NONE";
 	static OrderLinkedList<TimerCommand> queue = new OrderLinkedList<TimerCommand>();
+	static {
+		Thread thread = new Thread(new TimerCommandWDT(queue)); 
+		thread.start();
+	}
 	private TimerCommand editTimeCommand(IData request, TimerCommand origin){
 		if(origin == null || request == null) return null;
 		TimerCommand result = new TimerCommand();
