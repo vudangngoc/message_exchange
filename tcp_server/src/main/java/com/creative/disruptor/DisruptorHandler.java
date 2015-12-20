@@ -8,6 +8,8 @@ import com.creative.context.Context;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
+
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 public class DisruptorHandler {
@@ -15,6 +17,7 @@ public class DisruptorHandler {
     this.exec = Executors.newCachedThreadPool();
     this.disruptor = new Disruptor<DisruptorEvent>(DisruptorEvent.EVENT_FACTORY, ringSize, exec);
     logger.info("Init Disruptor with " + ringSize + " slot(s)");
+    logger.setLevel(Level.INFO);
   }
   final static Logger logger = Logger.getLogger(DisruptorHandler.class);
   @SuppressWarnings("unchecked")

@@ -14,6 +14,8 @@ import com.creative.service.GeneralService;
 import com.creative.service.StateService;
 import com.creative.service.TimerCommandService;
 import com.creative.GlobalConfig;
+
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 
@@ -25,6 +27,7 @@ public class ClientHandler extends Thread{
 
   public ClientHandler(Socket socket){
     this.socket = socket;
+    logger.setLevel(Level.INFO);
   }
 
   public static DisruptorHandler disrupt;
@@ -59,7 +62,7 @@ public class ClientHandler extends Thread{
         Context context = new Context(socket, message);
         if(isCanHandle(context.getRequest().get(GeneralService.COMMAND))){
           ClientHandler.getDisruptorHandler().push(context);
-          logger.info("Received: " + message);
+          logger.debug("Received: " + message);
         }else{
           logger.debug("Cannot handle: " + message);
           try {

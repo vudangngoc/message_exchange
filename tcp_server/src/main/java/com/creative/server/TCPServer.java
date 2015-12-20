@@ -37,7 +37,6 @@ public class TCPServer {
       while(true){
         Socket clientSocket = listenSocket.accept();
         ClientHandler handler = new ClientHandler(clientSocket);
-        logger.info("Incomming connection from " + clientSocket.getRemoteSocketAddress().toString());
         handler.run();
       }
     }catch(Exception e){}

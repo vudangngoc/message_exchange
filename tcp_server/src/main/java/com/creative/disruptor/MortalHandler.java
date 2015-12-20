@@ -1,6 +1,7 @@
 package com.creative.disruptor;
 
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.creative.service.GeneralService;
@@ -9,6 +10,7 @@ import com.lmax.disruptor.WorkHandler;
 
 public class MortalHandler implements EventHandler<DisruptorEvent> {
   public MortalHandler(Class<? extends WorkHandler<DisruptorEvent>> clazz, int lifeTime) throws InstantiationException, IllegalAccessException{
+  	logger.setLevel(Level.INFO);
     this.clazz = clazz;
     LIFE_TIME = lifeTime;
     RefreshWorker();

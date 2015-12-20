@@ -3,12 +3,18 @@ package com.creative;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import com.creative.disruptor.MortalHandler;
+
 public class OrderLinkedList<T extends Comparable<T>> {
   public OrderLinkedList(){
     shortcut = new ArrayList<OrderLinkedList<T>.Item>();
     this.size = 0;
+    logger.setLevel(Level.INFO);
   }
-
+  final static Logger logger = Logger.getLogger(MortalHandler.class);
   public static int PARTITION_SIZE = 50;
   private Item head;
   private List<Item> shortcut;
@@ -45,11 +51,13 @@ public class OrderLinkedList<T extends Comparable<T>> {
   }
 
   private boolean insertFrom(OrderLinkedList<T>.Item item, T data) {
+  	logger.debug("Insert item " + data.toString() + " from " + item.toString());
     if(item.getData().compareTo(data) > 0) return false;
     Item temp = item;
     while(temp.getNext() != null && temp.getNext().getData().compareTo(data) < 0){
       temp = temp.getNext();
     }
+    logger.debug("Insert after item " + temp.toString());
     Item temp2 = new Item(data);
     if(temp.getNext() != null){
       temp2.setNext(temp.getNext());
@@ -62,6 +70,7 @@ public class OrderLinkedList<T extends Comparable<T>> {
   }
 
   public T removeHead(){
+  	
     if(head == null || head.getData() == null){
       return null;
     }
@@ -75,6 +84,7 @@ public class OrderLinkedList<T extends Comparable<T>> {
       	shortcut.clear();
       else
       	shortcut.set(0,head);
+      logger.debug("Removing head " + data.toString());
       return data;
     }
   }
@@ -110,11 +120,13 @@ public class OrderLinkedList<T extends Comparable<T>> {
         for(int i = 0; i < shortcut.size();i++)
         	if(shortcut.get(i).equals(data))
         		shortcut.remove(i);
+        logger.debug("get and remove " + data.toString());
         return data;
       }
       if(temp.getNext().getNext() != null) temp = temp.getNext();
       else break; //reach tail
     }
+    
     return null;
   }
 

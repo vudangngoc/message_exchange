@@ -10,10 +10,12 @@ import com.creative.context.DataObjectFactory;
 import com.creative.context.IData;
 import com.creative.disruptor.DisruptorEvent;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 public class StateService implements GeneralService {
   public StateService(){
+  	logger.setLevel(Level.INFO);
   }
 
   public static final String DATA = "DATA";
@@ -41,7 +43,7 @@ public class StateService implements GeneralService {
         if(result == null || "".equals(result)){
           result = createSetStateCommand(request.get(FROM),request.get(TO),request.get(DATA));
           messageList.put(request.get(TO), result);
-          logger.debug("Device " + request.get(TO) + " connect the first time");
+          logger.info("Device " + request.get(TO) + " connect the first time");
         }
         break;
       case "STATE_INFO":

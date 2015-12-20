@@ -6,10 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 
@@ -24,6 +24,7 @@ public class TimerCommandService implements GeneralService {
 	private ExecutorService exec;
 	public TimerCommandService(){
 		//init checkTimer
+		logger.setLevel(Level.DEBUG);
 		this.exec = Executors.newFixedThreadPool(1);
 		exec.execute(new Runnable() {
 
@@ -91,7 +92,8 @@ public class TimerCommandService implements GeneralService {
 					queue.add(editResult);
 					result = convertString(editResult);
 				}
-			}			
+			} else
+				logger.debug("Get and remove but not found " + request.get(TIMER_ID));
 			break;			
 		case "TIMER_SET":
 			String commandToFire = StateService.createSetStateCommand(request.get(FROM), 
@@ -132,7 +134,7 @@ public class TimerCommandService implements GeneralService {
 			try {
 				Thread.sleep(500);
 				if(queue.getHead() == null) continue;
-				TimerCommand.updateCurrent();
+				TimerCommand.updateCurrent(); //Always call before working with TimeCommand
 				if(queue.getHead().getRemainTime() <= 0) {
 					while(queue.getSize() > 0 && queue.getHead().getRemainTime() <=0){
 						TimerCommand comm = queue.getHead();
@@ -140,7 +142,7 @@ public class TimerCommandService implements GeneralService {
 						ClientHandler.disrupt.push(new Context(null,comm.getCommand()));
 						comm.updateNextTime();
 						queue.removeHead();
-						if(comm.getRemainTime() > 0 && queue.add(comm)) {
+						if(comm.getRemainTime() >= 0 && queue.add(comm)) {
 							logger.debug("Readd to queue and fire after " + comm.getRemainTime() + "ms");
 						}else
 							logger.debug("Out of time or there is something wrong: " + comm.getRemainTime() + "ms");

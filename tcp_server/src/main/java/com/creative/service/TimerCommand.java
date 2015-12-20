@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 /**
  * TimerCommand should aware current system time, but it require call
@@ -16,6 +17,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class TimerCommand implements Comparable<TimerCommand>{
+
   final static Logger logger = Logger.getLogger(TimerCommand.class);
   private static long now;
   public static final String TIME_FORMAT= "yyyy-MMM-dd HH-mm-ss Z";
@@ -29,8 +31,9 @@ public class TimerCommand implements Comparable<TimerCommand>{
   private long nextRiseTime;
   private String id;
   private RepeatType repeatType;
-  public TimerCommand(){}
+  public TimerCommand(){logger.setLevel(Level.DEBUG);}
   public TimerCommand(String command, String timeConfig, RepeatType repeatType){
+  	logger.setLevel(Level.DEBUG);
     this.setTimeConfig(timeConfig);
     this.command = command;
     this.repeatType = repeatType;
@@ -40,10 +43,12 @@ public class TimerCommand implements Comparable<TimerCommand>{
     if(TimerCommand.now > nextRiseTime){ //Prevent call this function many times
       nextRiseTime += RepeatType.getRepeatDuration(repeatType);
     }
+    logger.debug("Update Next rise time " + this.id);
   }
 
   public boolean setTimeConfig(String timeConfig) {
     DateFormat formatter = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
+    logger.debug("Set time config " + this.id);
     try {
       Date date = formatter.parse(timeConfig);
       this.nextRiseTime = date.getTime();
@@ -55,6 +60,7 @@ public class TimerCommand implements Comparable<TimerCommand>{
   }
 
   public long getRemainTime(){
+  	logger.debug("Get remain time of " + this.id);
     return this.nextRiseTime - now;
   }
 
@@ -67,14 +73,17 @@ public class TimerCommand implements Comparable<TimerCommand>{
   }
 
   public void setNextRiseTime(long time){
+  	logger.debug("Set Next rise time of " + this.id);
     this.nextRiseTime = time;
   }
 
   public long getNextRiseTime(){
+  	logger.debug("Get Next rise time of " + this.id);
     return this.nextRiseTime;
   }
 
   public void setRemainTime(long time){
+  	logger.debug("Set remain time of " + this.id);
     this.nextRiseTime = now + time;
   }
   
