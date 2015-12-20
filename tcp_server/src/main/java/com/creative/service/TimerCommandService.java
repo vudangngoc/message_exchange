@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
@@ -18,22 +16,13 @@ import com.creative.context.Context;
 import com.creative.context.DataObjectFactory;
 import com.creative.context.IData;
 import com.creative.disruptor.DisruptorEvent;
-import com.creative.server.ClientHandler;
 
 public class TimerCommandService implements GeneralService {
-	private ExecutorService exec;
 	public TimerCommandService(){
 		//init checkTimer
+		Thread thread = new Thread(new TimerCommandWDT(queue)); 
+		thread.start();
 		logger.setLevel(Level.DEBUG);
-		this.exec = Executors.newFixedThreadPool(1);
-		exec.execute(new Runnable() {
-
-			@Override
-			public void run() {
-				checkTimer();
-
-			}
-		});
 	}
 	
 	final static Logger logger = Logger.getLogger(TimerCommandService.class);
@@ -47,7 +36,6 @@ public class TimerCommandService implements GeneralService {
 	public final static String REPEAT_WEEKLY = "REPEAT_WEEKLY";
 	public final static String REPEAT_NONE = "REPEAT_NONE";
 	static OrderLinkedList<TimerCommand> queue = new OrderLinkedList<TimerCommand>();
-
 	private TimerCommand editTimeCommand(IData request, TimerCommand origin){
 		if(origin == null || request == null) return null;
 		TimerCommand result = new TimerCommand();
@@ -127,32 +115,6 @@ public class TimerCommandService implements GeneralService {
 	public boolean canHandle(String command) {
 		if(command == null || "".equals(command)) return false;
 		return command.startsWith("TIMER_");
-	}
-	
-	private void checkTimer(){
-		while(true){
-			try {
-				Thread.sleep(500);
-				if(queue.getHead() == null) continue;
-				TimerCommand.updateCurrent(); //Always call before working with TimeCommand
-				if(queue.getHead().getRemainTime() <= 0) {
-					while(queue.getSize() > 0 && queue.getHead().getRemainTime() <=0){
-						TimerCommand comm = queue.getHead();
-						logger.debug("Processing timer: " + comm.getId());
-						ClientHandler.disrupt.push(new Context(null,comm.getCommand()));
-						comm.updateNextTime();
-						queue.removeHead();
-						long remain = comm.getRemainTime();
-						if(remain >= 0 && queue.add(comm)) {
-							logger.debug("Readd " + comm.getId() + " to queue and fire after " + remain + "ms");
-						}else
-							logger.debug(comm.getId() + "out of time or there is something wrong: " + remain + "ms");
-					}
-				}
-			} catch (InterruptedException e) {
-				break;
-			}
-		}
 	}
 
 	public String convertString(TimerCommand timer){

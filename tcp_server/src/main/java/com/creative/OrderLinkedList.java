@@ -52,7 +52,10 @@ public class OrderLinkedList<T extends Comparable<T>> {
 
   private boolean insertFrom(OrderLinkedList<T>.Item item, T data) {
   	logger.debug("Insert item " + data.toString() + " from " + item.data.toString());
-    if(item.getData().compareTo(data) > 0) return false;
+    if(item.getData().compareTo(data) > 0) {
+    	logger.debug("Insert item " + data.toString() + " but have lower priority compare with " + item.data.toString());
+    	return false;
+    }
     Item temp = item;
     while(temp.getNext() != null && temp.getNext().getData().compareTo(data) < 0){
       temp = temp.getNext();
