@@ -43,7 +43,7 @@ public class TimerCommand implements Comparable<TimerCommand>{
     if(TimerCommand.now > nextRiseTime){ //Prevent call this function many times
       nextRiseTime += RepeatType.getRepeatDuration(repeatType);
     }
-    logger.debug("Update Next rise time " + this.id);
+    logger.debug("Update Next rise time " + this.id + ", remain: " + getRemainTime());
   }
 
   public boolean setTimeConfig(String timeConfig) {

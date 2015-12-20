@@ -14,7 +14,7 @@ public class OrderLinkedList<T extends Comparable<T>> {
     this.size = 0;
     logger.setLevel(Level.DEBUG);
   }
-  final static Logger logger = Logger.getLogger(MortalHandler.class);
+  final static Logger logger = Logger.getLogger(OrderLinkedList.class);
   public static int PARTITION_SIZE = 50;
   private Item head;
   private List<Item> shortcut;
@@ -84,7 +84,12 @@ public class OrderLinkedList<T extends Comparable<T>> {
       	shortcut.clear();
       else
       	shortcut.set(0,head);
-      logger.debug("Removing head " + data.toString());
+      if(logger.getLevel().equals(Level.DEBUG)){
+      	if(shortcut.size() > 0)
+      		logger.debug("Removing head " + data.toString() + ", head at shortcut is " + shortcut.get(0).data.toString());
+      	else
+      		logger.debug("Removing head " + data.toString() + ", head at shortcut is null");
+      }
       return data;
     }
   }
@@ -141,6 +146,7 @@ public class OrderLinkedList<T extends Comparable<T>> {
       temp = temp.getNext();
     }
     lastUpdate = 0;
+    logger.debug("Update shortcut head is " + shortcut.get(0).data.toString());
     return shortcut.size();
   }
 

@@ -144,9 +144,9 @@ public class TimerCommandService implements GeneralService {
 						queue.removeHead();
 						long remain = comm.getRemainTime();
 						if(remain >= 0 && queue.add(comm)) {
-							logger.debug("Readd to queue and fire after " + remain + "ms");
+							logger.debug("Readd " + comm.getId() + " to queue and fire after " + remain + "ms");
 						}else
-							logger.debug("Out of time or there is something wrong: " + remain + "ms");
+							logger.debug(comm.getId() + "out of time or there is something wrong: " + remain + "ms");
 					}
 				}
 			} catch (InterruptedException e) {
