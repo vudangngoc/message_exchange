@@ -12,7 +12,7 @@ public class OrderLinkedList<T extends Comparable<T>> {
   public OrderLinkedList(){
     shortcut = new ArrayList<OrderLinkedList<T>.Item>();
     this.size = 0;
-    logger.setLevel(Level.DEBUG);
+    logger.setLevel(Level.INFO);
   }
   final static Logger logger = Logger.getLogger(OrderLinkedList.class);
   public static int PARTITION_SIZE = 50;
