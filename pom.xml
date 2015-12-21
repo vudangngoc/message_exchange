@@ -11,6 +11,7 @@
     <module>tcp_server</module>
     <module>front-server</module>
     <module>per_test</module>
+    <module>dns_server</module>
   </modules>
   <dependencies>
 
