@@ -40,7 +40,7 @@ public class TimerCommand implements Comparable<TimerCommand>{
     this.id = UUID.randomUUID().toString();
   }
   public void updateNextTime(){
-    if(TimerCommand.now > nextRiseTime){ //Prevent call this function many times
+    if(TimerCommand.now >= nextRiseTime){ //Prevent call this function many times
       nextRiseTime += RepeatType.getRepeatDuration(repeatType);
     }
     logger.debug("Update Next rise time " + this.id + ", remain: " + getRemainTime());
