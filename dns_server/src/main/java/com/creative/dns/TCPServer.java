@@ -5,25 +5,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 
 import com.creative.context.Context;
-import com.creative.disruptor.DisruptorEvent;
 import com.creative.disruptor.OnePublisherWorkerPool;
-import com.lmax.disruptor.WorkHandler;
 
 
 public class TCPServer {
   final static Logger logger = Logger.getLogger(TCPServer.class);
   private static OnePublisherWorkerPool pool;
   private static void setConfig(String[] args){
+    //N_threads = N_cpu * U_cpu * (1 + W / C)
+    int processors = Runtime.getRuntime().availableProcessors();
+    DNSHandler[] arr = new DNSHandler[processors];
+    for(int i = 0; i < processors; i++)
+      arr[i] = new DNSHandler();
     
-    ArrayList<WorkHandler<DisruptorEvent>> list = new ArrayList<>();
-    list.add(new DNSHandler());
-    pool = new OnePublisherWorkerPool(new DNSHandler());
+    pool = new OnePublisherWorkerPool(arr);
   }
 
 
