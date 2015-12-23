@@ -12,8 +12,8 @@ import com.creative.context.Context;
 import com.creative.disruptor.OnePublisherWorkerPool;
 
 
-public class TCPServer {
-  final static Logger logger = Logger.getLogger(TCPServer.class);
+public class DomainServer {
+  final static Logger logger = Logger.getLogger(DomainServer.class);
   private static OnePublisherWorkerPool pool;
   private static void setConfig(String[] args){
     //N_threads = N_cpu * U_cpu * (1 + W / C)
