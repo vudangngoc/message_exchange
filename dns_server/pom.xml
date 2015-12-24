@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>message_exchange</artifactId>
@@ -10,7 +11,19 @@
 	<dependencyManagement>
 
 	</dependencyManagement>
+	<repositories>
+		<repository>
+			<id>in-project</id>
+			<name>In Project Repo</name>
+			<url>file://${project.basedir}/libs</url>
+		</repository>
+	</repositories>
 	<dependencies>
+		<dependency>
+			<groupId>com.googlecode.jdbc-helper</groupId>
+			<artifactId>jdbc-helper</artifactId>
+			<version>0.3.1</version>
+		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
@@ -38,6 +51,11 @@
 			<artifactId>tcp_server</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.38</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -54,7 +72,7 @@
 						</goals>
 						<configuration>
 							<outputDirectory>
-								${project.build.directory}/lib
+								${project.build.directory}/libs
 							</outputDirectory>
 						</configuration>
 					</execution>
