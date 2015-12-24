@@ -1,19 +1,12 @@
-package com.creative.dns;
+package com.creative.jdbc;
 
 import java.util.Date;
 
 public class Domain {
-	private String id;
 	private String name;
 	private String host;
-	private Date lastUpdate;
+	private boolean isDelete;
 	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
 	public String getName() {
 		return name;
 	}
@@ -26,10 +19,10 @@ public class Domain {
 	public void setHost(String host) {
 		this.host = host;
 	}
-	public Date getLastUpdate() {
-		return lastUpdate;
+	public boolean getIsDelete() {
+		return isDelete;
 	}
-	public void setLastUpdate(Date lastUpdate) {
-		this.lastUpdate = lastUpdate;
+	public void setisDelete(boolean isDelete) {
+		this.isDelete = isDelete;
 	}
 }

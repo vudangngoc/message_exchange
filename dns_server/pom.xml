@@ -11,18 +11,11 @@
 	<dependencyManagement>
 
 	</dependencyManagement>
-	<repositories>
-		<repository>
-			<id>in-project</id>
-			<name>In Project Repo</name>
-			<url>file://${project.basedir}/libs</url>
-		</repository>
-	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>com.googlecode.jdbc-helper</groupId>
 			<artifactId>jdbc-helper</artifactId>
-			<version>0.3.1</version>
+			<version>0.3.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
