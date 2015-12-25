@@ -16,7 +16,7 @@ public class DomainDAO {
 	private String username;
 	private String url;
 	private long lastUpdate;
-	private String query = "SELECT host,name,isDelete FROM Domain WHERE LastUpdate > " + lastUpdate;
+	private String query = "SELECT host,name,isDelete FROM Domain WHERE lastUpdate > " + lastUpdate;
 	public DomainDAO(String driverName,String url, String username, String password){
     try {
       Class.forName(driverName.trim()).newInstance();
@@ -44,7 +44,7 @@ public class DomainDAO {
 		return result;
 	}
 	
-	private Connection getConn(){
+	public Connection getConn(){
     try {
 			return DriverManager.getConnection(url, username, password);
 		} catch (SQLException e) {

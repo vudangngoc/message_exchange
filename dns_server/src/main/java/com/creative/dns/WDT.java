@@ -2,6 +2,8 @@ package com.creative.dns;
 
 import java.util.HashMap;
 
+import com.creative.jdbc.Domain;
+
 public class WDT extends Thread {
 	private HashMap<String, Domain> data;
 	public WDT(HashMap<String, Domain> data){
