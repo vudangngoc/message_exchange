@@ -12,6 +12,7 @@
     <module>front-server</module>
     <module>per_test</module>
     <module>dns_server</module>
+    <module>crypto</module>
   </modules>
   <dependencies>
 

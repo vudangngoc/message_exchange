@@ -15,8 +15,8 @@ public class DomainDAO {
 	private String password;
 	private String username;
 	private String url;
-	private long lastUpdate;
-	private String query = "SELECT host,name,isDelete FROM Domain WHERE lastUpdate > " + lastUpdate;
+	private long lastUpdate = 0;
+	private String query = "SELECT ip,name,isDelete FROM Domain WHERE lastUpdate > ";
 	public DomainDAO(String driverName,String url, String username, String password){
     try {
       Class.forName(driverName.trim()).newInstance();
@@ -28,22 +28,29 @@ public class DomainDAO {
     this.password = password;
 	}
 	
-	public List<Domain> getUpdateSince(long lastUpdate){
+	public List<Domain> getUpdate(){
 		List<Domain> result = new ArrayList<>();
 		Connection conn = getConn();
 		if(conn != null){
 			try {
-				CallableStatement statement = conn.prepareCall(query);
+				
+				CallableStatement statement = conn.prepareCall(getQuery());
 				ResultSet rs = statement.executeQuery();
 				while(rs.next()){
 					result.add(wrap(rs));
 				}
 			} catch (SQLException e) {
+				System.out.println(e.toString());
 			}
 		}
+		this.lastUpdate = System.currentTimeMillis();
 		return result;
 	}
 	
+	private String getQuery() {
+		return query + lastUpdate;
+	}
+
 	public Connection getConn(){
     try {
 			return DriverManager.getConnection(url, username, password);
@@ -54,7 +61,14 @@ public class DomainDAO {
 	
 	private Domain wrap(ResultSet row){
 		Domain result = new Domain();
-		
+		try {
+			result.setHost(row.getString("ip"));
+			result.setName(row.getString("name"));
+			result.setisDelete(row.getBoolean("isDelete"));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return result;
 	}
 }

@@ -55,6 +55,11 @@
 			<version>2.3.3</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.creative</groupId>
+			<artifactId>crypto</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
