@@ -8,11 +8,11 @@
   <packaging>pom</packaging>
   <version>0.0.1</version>
   <modules>
-    <module>tcp_server</module>
+      <module>tcp_server</module>
+      <module>libs</module>
     <module>front-server</module>
     <module>per_test</module>
     <module>dns_server</module>
-    <module>crypto</module>
   </modules>
   <dependencies>
 

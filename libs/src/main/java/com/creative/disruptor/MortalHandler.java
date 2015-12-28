@@ -4,7 +4,7 @@ package com.creative.disruptor;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import com.creative.service.GeneralService;
+import com.creative.GeneralService;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.WorkHandler;
 
