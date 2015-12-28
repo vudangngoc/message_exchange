@@ -8,10 +8,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 
-import jdbchelper.JdbcException;
 
 public class DomainDAO {
+  final static Logger logger = Logger.getLogger(DomainDAO.class);
 	private String password;
 	private String username;
 	private String url;
@@ -21,7 +22,7 @@ public class DomainDAO {
     try {
       Class.forName(driverName.trim()).newInstance();
    } catch (Exception e) {
-      throw new JdbcException("Could not load JDBC Driver class " + driverName, e);
+     logger.debug("Could not load JDBC Driver class " + driverName, e);
    }
     this.url = url;
     this.username = username;

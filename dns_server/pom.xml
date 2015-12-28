@@ -13,11 +13,6 @@
 	</dependencyManagement>
 	<dependencies>
 		<dependency>
-			<groupId>com.googlecode.jdbc-helper</groupId>
-			<artifactId>jdbc-helper</artifactId>
-			<version>0.3.3</version>
-		</dependency>
-		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20140107</version>
