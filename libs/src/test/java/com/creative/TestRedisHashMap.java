@@ -12,7 +12,7 @@ import org.junit.Test;
 import redis.clients.jedis.Jedis;
 
 public class TestRedisHashMap {
-	private Jedis jedis= new Jedis("s1.thietbithongminh.info",11502);
+	private Jedis jedis= new Jedis("redis.thietbithongminh.info",11502);
 
 
   @Test
@@ -93,18 +93,5 @@ public class TestRedisHashMap {
     assertTrue("value".equals(map.replace("key@key","value1")));
     assertTrue("value1".equals(map.get("key@key")));
   }
-  
-  @Test
-  public void testPutPerf(){
-    //Given
-    RedisHashMap map = new RedisHashMap(this.jedis,"test");
-    map.clear();
-    //When
-    long start = System.currentTimeMillis();
-    for(int i = 0; i < 1000; i ++)
-    	map.put("key" + i, "value" + i);
-    start = System.currentTimeMillis() - start;
-    System.out.println("Put 1000 item take " + start);
-    //Then
-  }
+
 }

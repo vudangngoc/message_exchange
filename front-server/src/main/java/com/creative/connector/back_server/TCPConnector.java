@@ -39,7 +39,7 @@ public class TCPConnector implements Connector {
     this.port = port;
     try {
       address = InetAddress.getByName(host);
-      socket = new Socket(address, port);
+      Socket socket = new Socket(address, port);
       socket.close();
     } catch (UnknownHostException e) {
       logger.debug("Cannot resolve host " + host);
@@ -55,13 +55,10 @@ public class TCPConnector implements Connector {
   public String sendMessage(String message) {
     try
     {
-      if(socket == null) return "";
+    	InetAddress address = InetAddress.getByName(host);
+    	Socket socket = new Socket(address, port);
       if(!message.endsWith("\n")) message += "\n";
       //Send the message to the server
-      if(socket.isClosed()) {
-        InetAddress address = InetAddress.getByName(host);
-        socket = new Socket(address, port);
-      } 
       OutputStream os = socket.getOutputStream();
       OutputStreamWriter osw = new OutputStreamWriter(os);
       BufferedWriter bw = new BufferedWriter(osw);

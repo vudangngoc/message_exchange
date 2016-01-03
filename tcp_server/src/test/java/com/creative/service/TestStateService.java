@@ -1,6 +1,7 @@
 package com.creative.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -16,16 +17,13 @@ public class TestStateService extends ServiceTest {
     super();
     System.out.println("=======================================================================");
     System.out.println("Init TestStateService");
-    try {      
-      MortalHandler service = new MortalHandler(StateService.class,
-          Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.WORKER_LIFE_TIME)));
+    
+    	StateService service = new StateService();
 
       disrupt.injectServices(service);
       disrupt.startDisruptor();
 
-    } catch (InstantiationException | IllegalAccessException e) {
 
-    }
   }
   @Test
   public void testSetState(){
@@ -35,12 +33,13 @@ public class TestStateService extends ServiceTest {
     //When
     disrupt.push(context);
     try {
-      Thread.sleep(100);
+      Thread.sleep(1000);
     } catch (InterruptedException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
     //Then
+    assertNotNull(context.getResponse());
     IData data = DataObjectFactory.createDataObject(context.getResponse());
     assertEquals("OK",data.get("STATE"));
   }
@@ -58,17 +57,18 @@ public class TestStateService extends ServiceTest {
     context3.setRequest("{COMMAND:STATE_SET;FROM:X;TO:esp7_2@demo2;DATA:OFF}");
     disrupt.push(context3);
     try {
-      Thread.sleep(100);
+      Thread.sleep(1000);
     } catch (InterruptedException e) {
     }
     //When
     context3.setRequest("{COMMAND:STATE_STATUS}");
     disrupt.push(context3);
     try {
-      Thread.sleep(100);
+      Thread.sleep(1000);
     } catch (InterruptedException e) {
     }
     //Then
+    assertNotNull(context3.getResponse());
     IData data = DataObjectFactory.createDataObject(context3.getResponse());
     assertTrue(3 <= data.getList("data").size());
   }

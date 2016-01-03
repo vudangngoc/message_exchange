@@ -181,4 +181,27 @@ public class OrderLinkedList<T extends Comparable<T>> {
       this.next = next;
     }
   }
+  
+  /**
+   * Work with class have toString that return Id or something unique
+   * Input list will be removed all items appear in List
+   * @param List for comparing 
+   */
+  public void diff(List<String> input) {
+  	Item temp = head;
+  	while(temp != null){
+  		if(input.contains(temp.data.toString())){
+  			//If item appear at input, remove it in input and move next
+  			input.remove(temp.data.toString());
+  			temp = temp.next;			
+  		}
+  		else{
+  			//If item don't appear at input, remove it in list and move next
+  			T dataToDelete = temp.data;
+  			temp = temp.next;
+  			this.getAndRemoveSimilar(dataToDelete);
+  		}
+  	}
+  	//Remain items don't appear in list
+  }
 }

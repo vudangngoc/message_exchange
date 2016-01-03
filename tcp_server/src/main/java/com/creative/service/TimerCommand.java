@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 public class TimerCommand implements Comparable<TimerCommand>{
 
   final static Logger logger = Logger.getLogger(TimerCommand.class);
+  {logger.setLevel(Level.INFO);}
   private static long now;
   public static final String TIME_FORMAT= "yyyy-MMM-dd HH-mm-ss Z";
   /**
@@ -31,9 +32,10 @@ public class TimerCommand implements Comparable<TimerCommand>{
   private long nextRiseTime;
   private String id;
   private RepeatType repeatType;
-  public TimerCommand(){logger.setLevel(Level.DEBUG);}
+  public TimerCommand(){
+  	this.id = UUID.randomUUID().toString();
+  }
   public TimerCommand(String command, String timeConfig, RepeatType repeatType){
-  	logger.setLevel(Level.DEBUG);
     this.setTimeConfig(timeConfig);
     this.command = command;
     this.repeatType = repeatType;

@@ -2,13 +2,13 @@
 #nohup java -classpath tcp_server-0.0.1.jar:lib/crypto-0.0.1.jar:lib/json-20140107.jar:lib/disruptor-3.3.2.jar:lib/log4j-1.2.17.jar com.creative.server.TCPServer 10001 1000 512 /tmp > ~/tcp_server.log 2> ~/tcp_server.log
 SERVICE_NAME=TCP-server
 PATH_TO_JAR=./target/
-COMMNAD='nohup java -classpath tcp_server-0.0.1.jar:lib/crypto-0.0.1.jar:lib/json-20140107.jar:lib/disruptor-3.3.2.jar:lib/log4j-1.2.17.jar com.creative.server.TCPServer 10001 1000 512 > ~/tcp_server.log 2> ~/tcp_server.log &'
+COMMNAD='nohup java -classpath "tcp_server-0.0.1.jar:lib/*" com.creative.server.TCPServer 10001 1000 512 > /dev/null 2> /dev/null &'
 PID_PATH_NAME=/tmp/TCP-server-pid
 case $1 in
     start)
         echo "Starting $SERVICE_NAME ..."
         if [ ! -f $PID_PATH_NAME ]; then
-            cd $PATH_TO_JAR && nohup java -classpath tcp_server-0.0.1.jar:lib/crypto-0.0.1.jar:lib/json-20140107.jar:lib/disruptor-3.3.2.jar:lib/log4j-1.2.17.jar com.creative.server.TCPServer 10001 1000 512 > ~/tcp_server.log 2> ~/tcp_server.log &
+            cd $PATH_TO_JAR && nohup java -classpath "tcp_server-0.0.1.jar:lib/*" com.creative.server.TCPServer 10001 1000 512 > /dev/null 2> /dev/null &
             echo $! > $PID_PATH_NAME
             echo "$SERVICE_NAME started ..."
         else
@@ -19,7 +19,7 @@ case $1 in
         if [ -f $PID_PATH_NAME ]; then
             PID=$(cat $PID_PATH_NAME);
             echo "$SERVICE_NAME stoping ..."
-            kill $PID;
+            kill -9 $PID;
             echo "$SERVICE_NAME stopped ..."
             rm $PID_PATH_NAME
         else
@@ -30,11 +30,11 @@ case $1 in
         if [ -f $PID_PATH_NAME ]; then
             PID=$(cat $PID_PATH_NAME);
             echo "$SERVICE_NAME stopping ...";
-            kill $PID;
+            kill -9 $PID;
             echo "$SERVICE_NAME stopped ...";
             rm $PID_PATH_NAME
             echo "$SERVICE_NAME starting ..."
-            cd $PATH_TO_JAR && nohup java -classpath tcp_server-0.0.1.jar:lib/crypto-0.0.1.jar:lib/json-20140107.jar:lib/disruptor-3.3.2.jar:lib/log4j-1.2.17.jar com.creative.server.TCPServer 10001 1000 512 > ~/tcp_server.log 2> ~/tcp_server.log &
+            cd $PATH_TO_JAR && nohup java -classpath "tcp_server-0.0.1.jar:lib/*" com.creative.server.TCPServer 10001 1000 512 > /dev/null 2> /dev/null &
             echo $! > $PID_PATH_NAME
             echo "$SERVICE_NAME started ..."
         else

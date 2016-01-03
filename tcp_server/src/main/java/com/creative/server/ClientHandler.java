@@ -6,12 +6,13 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.creative.context.Context;
+import com.creative.disruptor.DisruptorEvent;
 import com.creative.disruptor.DisruptorHandler;
-import com.creative.disruptor.MortalHandler;
+import com.creative.disruptor.OnePublisherWorkerPool;
 import com.creative.service.StateService;
 import com.creative.service.TimerCommandService;
+import com.lmax.disruptor.WorkHandler;
 import com.creative.GeneralService;
 import com.creative.GlobalConfig;
 
@@ -19,73 +20,85 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 
-public class ClientHandler extends Thread{
+public class ClientHandler {
 
-  final static Logger logger = Logger.getLogger(ClientHandler.class);
+	private static class SocketHandler implements WorkHandler<DisruptorEvent>{
 
-  private Socket socket;
+		private boolean isCanHandle(String command) {
+			for(GeneralService s : services){
+				if(s.canHandle(command)) return true;
+			}
+			return false;
+		}
+		@Override
+		public void onEvent(DisruptorEvent event) throws Exception {
+			Socket socket = event.context.getClient();
+			try {
+				BufferedReader inBuffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				String message;
+				if(socket.isClosed() || inBuffer == null) return;
+				message = inBuffer.readLine();
+				if(message != null && disrupt != null){
+					Context context = new Context(socket, message);
+					if(isCanHandle(context.getRequest().get(GeneralService.COMMAND))){
+						disrupt.push(context);
+						logger.debug("Received: " + message);
+					}else{
+						logger.debug("Cannot handle: " + message);
+						try {
+							socket.close();
+						} catch (IOException e) {
+							logger.debug(e);
+						}
+					}
+				}
+			}catch (IOException | JSONException e) {
+				logger.debug(e);
+				try {
+					socket.close();
+				} catch (IOException ex) {
+					logger.debug(ex);
+				}
+			} 
+		}
 
-  public ClientHandler(Socket socket){
-    this.socket = socket;
-    logger.setLevel(Level.INFO);
-  }
+	}
 
-  public static DisruptorHandler disrupt;
-  private static List<MortalHandler> services = new ArrayList<MortalHandler>();
-  protected static DisruptorHandler getDisruptorHandler() {
-    if(disrupt == null) {
-      disrupt = new DisruptorHandler(Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.RING_BUFFER_SIZE)));
-      try {
-        MortalHandler service = new MortalHandler(StateService.class,
-            Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.WORKER_LIFE_TIME)));
-        services.add(service);
-        disrupt.injectServices(service);
-        MortalHandler timerService = new MortalHandler(TimerCommandService.class,
-            Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.WORKER_LIFE_TIME)));
-        services.add(timerService);
-        disrupt.injectServices(timerService);
-        disrupt.startDisruptor();
-      } catch (InstantiationException | IllegalAccessException e) {
-        logger.debug(e);
-      }
-    }
-    return disrupt;
-  }
+	final static Logger logger = Logger.getLogger(ClientHandler.class);
 
-  public void run(){
-    try {
-      BufferedReader inBuffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-      String message;
-      if(socket.isClosed() || inBuffer == null) return;
-      message = inBuffer.readLine();
-      if(message != null && ClientHandler.getDisruptorHandler() != null){
-        Context context = new Context(socket, message);
-        if(isCanHandle(context.getRequest().get(GeneralService.COMMAND))){
-          ClientHandler.getDisruptorHandler().push(context);
-          logger.debug("Received: " + message);
-        }else{
-          logger.debug("Cannot handle: " + message);
-          try {
-            socket.close();
-          } catch (IOException e) {
-            logger.debug(e);
-          }
-        }
-      }
-    }catch (IOException | JSONException e) {
-      logger.debug(e);
-      try {
-        socket.close();
-      } catch (IOException ex) {
-        logger.debug(ex);
-      }
-    } 
-  }
+	public ClientHandler(){
+		logger.setLevel(Level.DEBUG);
+		disrupt = new DisruptorHandler(Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.RING_BUFFER_SIZE)));
 
-  private boolean isCanHandle(String command) {
-    for(MortalHandler s : services){
-      if(s.canHandle(command)) return true;
-    }
-    return false;
-  }
+		StateService stateService = new StateService();
+		services.add(stateService);
+		disrupt.injectServices(stateService);
+		TimerCommandService timerService = new TimerCommandService();
+		services.add(timerService);
+		disrupt.injectServices(timerService);
+		disrupt.startDisruptor();
+		timerService.startWDT();
+		timerService.startUpdateDB();
+		
+    //N_threads = N_cpu * U_cpu * (1 + W / C)
+    int processors = Runtime.getRuntime().availableProcessors();
+    SocketHandler[] arr = new SocketHandler[processors];
+    for(int i = 0; i < processors; i++)
+      arr[i] = new SocketHandler();
+    
+    socketPool = new OnePublisherWorkerPool(arr);
+	}
+	private OnePublisherWorkerPool socketPool;
+	
+	/**
+	 * Check disruptor status before push event
+	 */
+	public static DisruptorHandler disrupt;
+	public static List<GeneralService> services = new ArrayList<GeneralService>();
+
+	public void run(Socket socket){
+		socketPool.push(new Context(socket,""));
+	}
+
+
 }

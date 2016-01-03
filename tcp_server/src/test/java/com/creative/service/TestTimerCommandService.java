@@ -18,16 +18,13 @@ public class TestTimerCommandService extends ServiceTest {
 		super();
 		System.out.println("=======================================================================");
 		System.out.println("Init TestTimerCommandService");
-		try {      
-			MortalHandler timerService = new MortalHandler(TimerCommandService.class,
-					Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.WORKER_LIFE_TIME)));
 
-			disrupt.injectServices(timerService);
-			disrupt.startDisruptor();
+		TimerCommandService timerService = new TimerCommandService();
 
-		} catch (InstantiationException | IllegalAccessException e) {
+		disrupt.injectServices(timerService);
+		disrupt.startDisruptor();
+		timerService.startWDT();
 
-		}
 	}
 	@Test
 	public void testAddTimerCommand(){
@@ -36,8 +33,8 @@ public class TestTimerCommandService extends ServiceTest {
 		DateFormat df = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
 		MockContext context = new MockContext();
 		context.setRequest(TimerCommandService.createAddTimeCommand(
-		    "from", "to", RepeatType.REPEAT_MINUTELY.name(), 
-		    df.format(new Date()), "ON"));
+				"from", "to", RepeatType.REPEAT_MINUTELY.name(), 
+				df.format(new Date()), "ON"));
 		//When
 		disrupt.push(context);
 		while(context.getResponse() == null){
@@ -46,7 +43,7 @@ public class TestTimerCommandService extends ServiceTest {
 			} catch (InterruptedException e) {
 			}
 		}
-			
+
 		//Then
 		assertFalse("{}".equals(context.getResponse()));
 		IData data = DataObjectFactory.createDataObject(context.getResponse());
@@ -60,22 +57,22 @@ public class TestTimerCommandService extends ServiceTest {
 		DateFormat df = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
 		MockContext context = new MockContext();
 		context.setRequest(TimerCommandService.createAddTimeCommand(
-		    "from", "to", RepeatType.REPEAT_MINUTELY.name(), 
-		    df.format(new Date()), "ON"));
+				"from", "to", RepeatType.REPEAT_MINUTELY.name(), 
+				df.format(new Date()), "ON"));
 		disrupt.push(context);
 		disrupt.push(context);
 		disrupt.push(context);
-		while(context.getResponse() == null){
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-			}
+
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
 		}
+
 		//When
 		context.setRequest(TimerCommandService.createListTimeCommand());
 		disrupt.push(context);
 		try {
-			Thread.sleep(100);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -93,8 +90,8 @@ public class TestTimerCommandService extends ServiceTest {
 		DateFormat df = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
 		MockContext context = new MockContext();
 		context.setRequest(TimerCommandService.createAddTimeCommand(
-		    "from", "to", RepeatType.REPEAT_MINUTELY.name(), 
-		    df.format(new Date()), "ON"));
+				"from", "to", RepeatType.REPEAT_MINUTELY.name(), 
+				df.format(new Date()), "ON"));
 		disrupt.push(context);
 		while(context.getResponse() == null){
 			try {
@@ -126,8 +123,8 @@ public class TestTimerCommandService extends ServiceTest {
 		DateFormat df = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
 		MockContext context = new MockContext();
 		context.setRequest(TimerCommandService.createAddTimeCommand(
-		    "from", "to", RepeatType.REPEAT_MINUTELY.name(), 
-		    df.format(new Date()), "ON"));
+				"from", "to", RepeatType.REPEAT_MINUTELY.name(), 
+				df.format(new Date()), "ON"));
 		disrupt.push(context);
 		while(context.getResponse() == null){
 			try {
@@ -142,15 +139,14 @@ public class TestTimerCommandService extends ServiceTest {
 		context1.setRequest(message);
 		context1.setResponse("");
 		disrupt.push(context1);
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-			}
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		}
 		//Then
 		System.out.println(context1.getResponse());
 		assertTrue(!"{}".equals(context1.getResponse()));
 		IData result = DataObjectFactory.createDataObject(context1.getResponse());
-		assertEquals(id,result.get(TimerCommandService.TIMER_ID));
 		assertEquals("REPEAT_WEEKLY",result.get(TimerCommandService.REPEATLY));
 		IData command = DataObjectFactory.createDataObject(result.get(TimerCommandService.COMMAND));
 		assertEquals("ON",command.get("DATA"));

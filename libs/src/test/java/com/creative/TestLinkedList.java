@@ -1,6 +1,7 @@
 package com.creative;
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -99,6 +100,29 @@ public class TestLinkedList {
   }
   
   @Test
+  public void testDiff(){
+    //Given
+    OrderLinkedList<Item> list = new OrderLinkedList<>();
+    //When
+    list.add(new Item(3));
+    list.add(new Item(1));
+    list.add(new Item(2));
+    list.add(new Item(4));
+    list.add(new Item(5));
+    
+    List<String> temp = new ArrayList<>();
+    temp.add("1");
+    temp.add("2");
+    temp.add("3");
+    temp.add("6");
+    //Then
+    list.diff(temp);
+    assertEquals(1, temp.size());
+    assertEquals(3, list.getSize());
+    assertEquals("6", temp.get(0));
+  }
+  
+  @Test
   public void testInsertFrom(){
     //Given
     OrderLinkedList<Item> list = new OrderLinkedList<>();
@@ -137,6 +161,10 @@ public class TestLinkedList {
         return ((Item)o).data == this.data;
       }
       return false;
+    }
+    @Override
+    public String toString(){
+    	return data + "";
     }
   }
 }

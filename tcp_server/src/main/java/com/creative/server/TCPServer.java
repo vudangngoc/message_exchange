@@ -2,8 +2,12 @@ package com.creative.server;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ResourceBundle;
 
 import com.creative.GlobalConfig;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+
 import org.apache.log4j.Logger;
 
 public class TCPServer {
@@ -26,18 +30,35 @@ public class TCPServer {
       GlobalConfig.setConfig(GlobalConfig.RING_BUFFER_SIZE,"512");
     }
   }
-
+  static {
+    ResourceBundle rb = ResourceBundle.getBundle("conf.configuration");
+    JedisPoolConfig redisConfig = new JedisPoolConfig();
+    redisConfig.setTestOnBorrow(false);
+    redisConfig.setTestWhileIdle(true);
+    redisConfig.setTestOnCreate(false);
+    redisConfig.setTestOnReturn(false);
+    redisConfig.setMaxTotal(128);
+    redisPool = new JedisPool(redisConfig, rb.getString("redis.server"), Integer.parseInt(rb.getString("redis.port")));
+  }
+  public static JedisPool redisPool;
 
   public static void main(String[] args) {
     setConfig(args);
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				System.out.println("Closing database");
+				redisPool.destroy();
+			}
+		});
+		ClientHandler handler = new ClientHandler();
     try {
       @SuppressWarnings("resource")
       ServerSocket listenSocket = new ServerSocket(Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.PORT)));
       logger.info("Start server at port:" + GlobalConfig.getConfig(GlobalConfig.PORT));
       while(true){
         Socket clientSocket = listenSocket.accept();
-        ClientHandler handler = new ClientHandler(clientSocket);
-        handler.run();
+        
+        handler.run(clientSocket);
       }
     }catch(Exception e){}
     finally{}
