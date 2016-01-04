@@ -20,6 +20,7 @@ import com.creative.disruptor.DisruptorEvent;
 import com.creative.server.TCPServer;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 public class TimerCommandService implements GeneralService {
 	public TimerCommandService(){
@@ -52,6 +53,7 @@ public class TimerCommandService implements GeneralService {
 	public final static String REPEAT_WEEKLY = "REPEAT_WEEKLY";
 	public final static String REPEAT_NONE = "REPEAT_NONE";
 	public static final String HASH_NAME = "TimerCommand";
+	public JedisPool redisPool = TCPServer.redisPool;
 	private OrderLinkedList<TimerCommand> queue = new OrderLinkedList<TimerCommand>();
 
 	private TimerCommand editTimeCommand(IData request, TimerCommand origin){
@@ -87,7 +89,7 @@ public class TimerCommandService implements GeneralService {
 		if(!canHandle(command)) return;
 		String result = "";
 		TimerCommand temp = new TimerCommand();
-		Jedis redisServer = TCPServer.redisPool.getResource();
+		Jedis redisServer = this.redisPool.getResource();
 		switch(command){
 		case "TIMER_EDIT":
 			temp.setId(request.get(TIMER_ID));
@@ -151,6 +153,7 @@ public class TimerCommandService implements GeneralService {
 	}
 	
 	public static TimerCommand revertString(String timer){
+	  if(timer == null) return null;
 		IData data = DataObjectFactory.createDataObject(timer);
 		DateFormat df = new SimpleDateFormat(TimerCommand.TIME_FORMAT);
 		TimerCommand result = new TimerCommand();

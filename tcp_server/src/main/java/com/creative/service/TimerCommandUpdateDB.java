@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.creative.OrderLinkedList;
@@ -17,6 +18,7 @@ public class TimerCommandUpdateDB extends Thread{
 	private OrderLinkedList<TimerCommand> queue;
 	public TimerCommandUpdateDB(OrderLinkedList<TimerCommand> queue){
 		this.queue = queue;
+		logger.setLevel(Level.DEBUG);
 	}
 	final static Logger logger = Logger.getLogger(TimerCommandUpdateDB.class);
 	@Override
@@ -25,11 +27,18 @@ public class TimerCommandUpdateDB extends Thread{
 			try {
 				Jedis redisServer = TCPServer.redisPool.getResource();
 				List<String> db = new ArrayList<>(redisServer.hkeys(TimerCommandService.HASH_NAME));
+				logger.debug("Fetch " + db.size() + " items from Redis server");
 				queue.diff(db);
-				String[] arr = new String[db.size()];
-				List<String> commandToAdd = redisServer.hmget(TimerCommandService.HASH_NAME, db.toArray(arr));
-				for(String comman : commandToAdd){
-					queue.add(TimerCommandService.revertString(comman));
+				if(db.size() > 0) {
+				  String[] arr = new String[db.size()];
+				  List<String> commandToAdd = redisServer.hmget(TimerCommandService.HASH_NAME, db.toArray(arr));
+				  logger.debug("Fetch " + commandToAdd.size() + " new items from Redis server");
+				  for(String comman : commandToAdd){
+				    TimerCommand temp = TimerCommandService.revertString(comman);
+				    while(temp.getNextRiseTime() < System.currentTimeMillis())
+				      temp.updateNextTime();
+				    queue.add(temp);
+				  }
 				}
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {

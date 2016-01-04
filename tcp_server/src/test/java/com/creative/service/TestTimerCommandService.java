@@ -12,6 +12,9 @@ import com.creative.context.DataObjectFactory;
 import com.creative.context.IData;
 import com.creative.disruptor.MortalHandler;
 
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+
 public class TestTimerCommandService extends ServiceTest {
 
 	public TestTimerCommandService(){
@@ -20,7 +23,7 @@ public class TestTimerCommandService extends ServiceTest {
 		System.out.println("Init TestTimerCommandService");
 
 		TimerCommandService timerService = new TimerCommandService();
-
+		timerService.redisPool = new JedisPool(new JedisPoolConfig(), "127.0.0.1", 11502);
 		disrupt.injectServices(timerService);
 		disrupt.startDisruptor();
 		timerService.startWDT();

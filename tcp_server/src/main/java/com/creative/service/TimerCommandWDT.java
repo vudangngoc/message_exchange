@@ -14,7 +14,7 @@ public class TimerCommandWDT extends Thread{
 	private OrderLinkedList<TimerCommand> queue;
 	public TimerCommandWDT(OrderLinkedList<TimerCommand> queue){
 		this.queue = queue;
-		logger.setLevel(Level.INFO);
+		logger.setLevel(Level.DEBUG);
 	}
 	final static Logger logger = Logger.getLogger(TimerCommandWDT.class);
 	@Override
