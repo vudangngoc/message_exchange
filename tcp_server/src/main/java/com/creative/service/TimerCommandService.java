@@ -25,7 +25,7 @@ import redis.clients.jedis.JedisPool;
 public class TimerCommandService implements GeneralService {
 	public TimerCommandService(){
 		//init checkTimer
-
+	  TimerCommand.updateCurrent();
 		logger.setLevel(Level.DEBUG);
 	}
 	/**
