@@ -35,6 +35,7 @@ public class TimerCommandUpdateDB extends Thread{
 				  logger.debug("Fetch " + commandToAdd.size() + " new items from Redis server");
 				  for(String comman : commandToAdd){
 				    TimerCommand temp = TimerCommandService.revertString(comman);
+				    if("".equals(temp.getId())) continue;
 				    while(temp.getNextRiseTime() < System.currentTimeMillis())
 				      temp.updateNextTime();
 				    queue.add(temp);
