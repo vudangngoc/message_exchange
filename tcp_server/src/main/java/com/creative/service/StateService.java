@@ -32,44 +32,6 @@ public class StateService implements GeneralService {
     return command.startsWith("STATE_");
   }
 
-  
-  public void onEvent(DisruptorEvent event) throws Exception {
-    Context context = event.context;
-    String command;
-    command = context.getRequest().get(COMMAND);
-    if("".equals(command)) return;
-    if(!canHandle(command)) return;
-    IData request = context.getRequest();
-    String result = "";
-    switch(command){
-      case "STATE_GET":
-        result = messageList.get(request.get(FROM));
-        if(result == null || "".equals(result)){
-          result = createSetStateCommand(request.get(FROM),request.get(TO),request.get(DATA));
-          messageList.put(request.get(TO), result);
-          logger.info("Device " + request.get(TO) + " connect the first time");
-        }
-        break;
-      case "STATE_INFO":
-        result = getInfo();
-        break;
-      case "STATE_STATUS":
-        result = getStatus();
-        break;
-      case "STATE_SET":
-        messageList.put(request.get(TO), request.toString());
-        break;
-    }
-    if(result == null || "".equals(result)) {
-      IData data = DataObjectFactory.createDataObject();
-      data.set("STATE", "OK");
-      result = data.toString();
-      }
-    logger.debug("Processing " + request.toString());
-    context.setResponse(result);
-
-  }
-
   @Override
   public String getStatus() {
     List<String> list = new ArrayList<>();

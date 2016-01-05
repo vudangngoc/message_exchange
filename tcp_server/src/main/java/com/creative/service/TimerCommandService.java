@@ -74,70 +74,6 @@ public class TimerCommandService implements GeneralService {
 		}
 		return result;
 	}
-	
-	
-	public void onEvent(DisruptorEvent event) throws Exception {
-		//{FROM:XXX;COMMAND:TIMER_XXX;TO:XXX;STATE:xxx;TIME_FIRE:XXXX;REPEATLY:XXXX}}
-		Context context = event.context;
-		IData request = context.getRequest();
-		String command;
-		try{
-			command = request.get(COMMAND);
-		}catch(JSONException e){
-			return;
-		}
-		if(!canHandle(command)) return;
-		String result = "";
-		TimerCommand temp = new TimerCommand();
-		Jedis redisServer = this.redisPool.getResource();
-		switch(command){
-		case "TIMER_EDIT":
-			temp.setId(request.get(TIMER_ID));
-			temp = queue.getAndRemoveSimilar(temp);
-			if(temp != null){
-				TimerCommand editResult = editTimeCommand(request, temp);
-				if(editResult != null){
-					queue.add(editResult);
-					result = convertString(editResult);
-					if(redisServer.hset(HASH_NAME, editResult.getId(), result) == 0)
-						logger.debug("Should insert but update at TIMER_EDIT");
-				}
-			} else
-				logger.debug("Get and remove but not found " + request.get(TIMER_ID));
-			break;			
-		case "TIMER_SET":
-			String commandToFire = StateService.createSetStateCommand(request.get(FROM), 
-					request.get(TO), 
-					request.get(STATE));
-			temp = new TimerCommand(commandToFire,
-					request.get(TIME_FIRE), 
-					RepeatType.getRepeatByString(request.get(REPEATLY)));
-			queue.add(temp);
-			result = "{\""+ TIMER_ID +"\":\"" + temp.getId() + "\"}";
-			if(redisServer.hset(HASH_NAME, request.get(TIMER_ID), convertString(temp)) == 0)
-				logger.debug("Should insert but update at TIMER_SET");
-			break;
-		case "TIMER_REMOVE":
-			//delete a timer
-			temp.setId(request.get(TIMER_ID));
-			temp = queue.getAndRemoveSimilar(temp);
-			if(temp != null) result = convertString(temp);
-			if(redisServer.hdel(HASH_NAME, request.get(TIMER_ID)) == 0)
-				logger.debug("Delete but not found");;
-			break;
-		case "TIMER_REMOVE_ALL":
-			//delete all timer
-			queue.removeAll();
-			redisServer.del(HASH_NAME);
-			break;
-		case "TIMER_LIST":
-			result = getStatus();
-			break;
-		}
-		if(result == null || "".equals(result)) result = "{}";
-		redisServer.close();
-		context.setResponse(result);
-	}
 
 	@Override
 	public boolean canHandle(String command) {
@@ -261,7 +197,7 @@ public class TimerCommandService implements GeneralService {
 						RepeatType.getRepeatByString(request.get(REPEATLY)));
 				queue.add(temp);
 				result = "{\""+ TIMER_ID +"\":\"" + temp.getId() + "\"}";
-				redisServer.hset(HASH_NAME, request.get(TIMER_ID), convertString(temp));
+				redisServer.hset(HASH_NAME, temp.getId(), convertString(temp));
 				break;
 			case "TIMER_REMOVE":
 				//delete a timer
