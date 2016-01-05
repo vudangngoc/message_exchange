@@ -12,6 +12,8 @@ import com.creative.context.IData;
 import com.creative.disruptor.DisruptorEvent;
 import com.creative.server.TCPServer;
 
+import redis.clients.jedis.JedisPool;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -22,8 +24,8 @@ public class StateService implements GeneralService {
 
   public static final String DATA = "DATA";
   final static Logger logger = Logger.getLogger(StateService.class);
-
-  private RedisHashMap messageList = new RedisHashMap(TCPServer.redisPool.getResource(),"StateService");
+  public JedisPool redisPool = TCPServer.redisPool;
+  private RedisHashMap messageList = new RedisHashMap(redisPool.getResource(),"StateService");
 
   public boolean canHandle(String command) {
     if(command == null || "".equals(command)) return false;

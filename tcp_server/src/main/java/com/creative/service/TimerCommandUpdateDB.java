@@ -40,7 +40,7 @@ public class TimerCommandUpdateDB extends Thread{
 				    queue.add(temp);
 				  }
 				}
-				Thread.sleep(1000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				break;
 			} 

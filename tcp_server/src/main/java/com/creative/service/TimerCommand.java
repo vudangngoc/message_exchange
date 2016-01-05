@@ -30,16 +30,14 @@ public class TimerCommand implements Comparable<TimerCommand>{
   }
   private String command;
   private long nextRiseTime;
-  private String id;
+  private String id = UUID.randomUUID().toString();
   private RepeatType repeatType;
   public TimerCommand(){
-  	this.id = UUID.randomUUID().toString();
   }
   public TimerCommand(String command, String timeConfig, RepeatType repeatType){
     this.setTimeConfig(timeConfig);
     this.command = command;
     this.repeatType = repeatType;
-    this.id = UUID.randomUUID().toString();
   }
   public void updateNextTime(){
     if(TimerCommand.now >= nextRiseTime){ //Prevent call this function many times

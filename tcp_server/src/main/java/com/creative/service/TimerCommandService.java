@@ -99,7 +99,8 @@ public class TimerCommandService implements GeneralService {
 				if(editResult != null){
 					queue.add(editResult);
 					result = convertString(editResult);
-					redisServer.hset(HASH_NAME, editResult.getId(), result);
+					if(redisServer.hset(HASH_NAME, editResult.getId(), result) == 0)
+						logger.debug("Should insert but update at TIMER_EDIT");
 				}
 			} else
 				logger.debug("Get and remove but not found " + request.get(TIMER_ID));
@@ -113,14 +114,16 @@ public class TimerCommandService implements GeneralService {
 					RepeatType.getRepeatByString(request.get(REPEATLY)));
 			queue.add(temp);
 			result = "{\""+ TIMER_ID +"\":\"" + temp.getId() + "\"}";
-			redisServer.hset(HASH_NAME, request.get(TIMER_ID), convertString(temp));
+			if(redisServer.hset(HASH_NAME, request.get(TIMER_ID), convertString(temp)) == 0)
+				logger.debug("Should insert but update at TIMER_SET");
 			break;
 		case "TIMER_REMOVE":
 			//delete a timer
 			temp.setId(request.get(TIMER_ID));
 			temp = queue.getAndRemoveSimilar(temp);
 			if(temp != null) result = convertString(temp);
-			redisServer.hdel(HASH_NAME, request.get(TIMER_ID));
+			if(redisServer.hdel(HASH_NAME, request.get(TIMER_ID)) == 0)
+				logger.debug("Delete but not found");;
 			break;
 		case "TIMER_REMOVE_ALL":
 			//delete all timer
@@ -132,6 +135,7 @@ public class TimerCommandService implements GeneralService {
 			break;
 		}
 		if(result == null || "".equals(result)) result = "{}";
+		redisServer.close();
 		context.setResponse(result);
 	}
 
