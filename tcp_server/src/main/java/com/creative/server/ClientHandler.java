@@ -67,7 +67,7 @@ public class ClientHandler {
 	final static Logger logger = Logger.getLogger(ClientHandler.class);
 
 	public ClientHandler(){
-		logger.setLevel(Level.DEBUG);
+		logger.setLevel(Level.INFO);
 		disrupt = new DisruptorHandler(Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.RING_BUFFER_SIZE)));
 
 		StateService stateService = new StateService();

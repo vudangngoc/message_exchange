@@ -26,7 +26,7 @@ public class TimerCommandService implements GeneralService {
 	public TimerCommandService(){
 		//init checkTimer
 	  TimerCommand.updateCurrent();
-		logger.setLevel(Level.DEBUG);
+		logger.setLevel(Level.INFO);
 	}
 	/**
 	 * Call after setup Disruptor
