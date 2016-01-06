@@ -41,6 +41,7 @@ public class TimerCommandUpdateDB extends Thread{
 				    queue.add(temp);
 				  }
 				}
+				redisServer.close();
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				break;

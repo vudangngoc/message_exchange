@@ -173,7 +173,7 @@ public class TimerCommandService implements GeneralService {
 			if(!canHandle(command)) return;
 			String result = "";
 			TimerCommand temp = new TimerCommand();
-			Jedis redisServer = TCPServer.redisPool.getResource();
+			Jedis redisServer = redisPool.getResource();
 			switch(command){
 			case "TIMER_EDIT":
 				temp.setId(request.get(TIMER_ID));
@@ -218,7 +218,7 @@ public class TimerCommandService implements GeneralService {
 				break;
 			}
 			if(result == null || "".equals(result)) result = "{}";
+			redisServer.close();
 			context.setResponse(result);
-		
 	}
 }

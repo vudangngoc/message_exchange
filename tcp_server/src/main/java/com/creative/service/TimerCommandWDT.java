@@ -36,6 +36,7 @@ public class TimerCommandWDT extends Thread{
 						}else{
 							Jedis redisServer = TCPServer.redisPool.getResource();
 							redisServer.hdel(TimerCommandService.HASH_NAME, comm.getId());
+							redisServer.close();
 							logger.debug(comm.getId() + " out of time or there is something wrong: " + remain + "ms");
 						}
 					}
