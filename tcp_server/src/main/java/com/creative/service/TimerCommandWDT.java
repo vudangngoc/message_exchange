@@ -25,7 +25,7 @@ public class TimerCommandWDT extends Thread{
 				if(queue.getHead() == null) continue;
 				TimerCommand.updateCurrent(); //Always call before working with TimeCommand
 				if(queue.getHead().getRemainTime() <= 0) {
-					while(queue.getSize() > 0 && queue.getHead().getRemainTime() <=0){
+					while(queue.getSize() > 0 && queue.getHead().getRemainTime() < 250){
 						TimerCommand comm = queue.removeHead();
 						logger.debug("Processing timer: " + comm.getId());
 						ClientHandler.disrupt.push(new Context(null,comm.getCommand()));

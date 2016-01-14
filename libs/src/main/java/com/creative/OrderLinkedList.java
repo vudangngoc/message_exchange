@@ -47,6 +47,7 @@ public class OrderLinkedList<T extends Comparable<T>> {
         return insertFrom(shortcut.get(index - 1),data);
       }
     }
+    logger.debug("Insert " + data.toString() + " to List");
     return insertFrom(shortcut.get(shortcut.size() - 1), data);
   }
 
