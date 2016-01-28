@@ -8,8 +8,10 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.creative.OrderLinkedList;
+import com.creative.context.Context;
 import com.creative.context.DataObjectFactory;
 import com.creative.context.IData;
+import com.creative.server.ClientHandler;
 import com.creative.server.TCPServer;
 
 import redis.clients.jedis.Jedis;
@@ -18,7 +20,7 @@ public class TimerCommandUpdateDB extends Thread{
 	private OrderLinkedList<TimerCommand> queue;
 	public TimerCommandUpdateDB(OrderLinkedList<TimerCommand> queue){
 		this.queue = queue;
-		logger.setLevel(Level.INFO);
+		logger.setLevel(Level.DEBUG);
 	}
 	final static Logger logger = Logger.getLogger(TimerCommandUpdateDB.class);
 	@Override
@@ -38,6 +40,7 @@ public class TimerCommandUpdateDB extends Thread{
 				    if("".equals(temp.getId())) continue;
 				    while(temp.getNextRiseTime() < System.currentTimeMillis())
 				      temp.updateNextTime();
+				    ClientHandler.disrupt.push(new Context(null, TimerCommandService.convertString(temp)));
 				    queue.add(temp);
 				  }
 				}

@@ -22,16 +22,21 @@ public class TimerCommandWDT extends Thread{
 		while(true){
 			try {
 				Thread.sleep(500);
-				if(queue.getHead() == null) continue;
+				if(queue.getHead() == null) {
+					logger.debug("There is nobody at home!!");
+					continue;
+				}
 				TimerCommand.updateCurrent(); //Always call before working with TimeCommand
 				if(queue.getHead().getRemainTime() <= 0) {
-					while(queue.getSize() > 0 && queue.getHead().getRemainTime() < 250){
-						TimerCommand comm = queue.removeHead();
+					while(queue.getSize() > 0 && queue.getHead().getRemainTime() < 0){
+						TimerCommand comm = queue.getHead();
 						logger.debug("Processing timer: " + comm.getId());
 						ClientHandler.disrupt.push(new Context(null,comm.getCommand()));
 						comm.updateNextTime();
 						long remain = comm.getRemainTime();
-						if(remain >= 0 && queue.add(comm)) {
+						if(remain >= 0) {
+							queue.removeHead();
+							queue.add(comm);
 							logger.debug("Readd " + comm.getId() + " to queue and fire after " + remain + "ms");
 						}else{
 							Jedis redisServer = TCPServer.redisPool.getResource();
