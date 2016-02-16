@@ -23,7 +23,7 @@ public class TestTimerCommandService extends ServiceTest {
 		System.out.println("Init TestTimerCommandService");
 
 		TimerCommandService timerService = new TimerCommandService();
-		timerService.redisPool = new JedisPool(new JedisPoolConfig(), "127.0.0.1", 11502);
+		timerService.redisPool = new JedisPool(new JedisPoolConfig(), "127.0.0.1", 11502,500,"e1VCUnspDFRM");
 		disrupt.injectServices(timerService);
 		disrupt.startDisruptor();
 		timerService.startWDT();

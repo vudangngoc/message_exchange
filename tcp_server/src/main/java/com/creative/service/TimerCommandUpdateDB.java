@@ -20,7 +20,7 @@ public class TimerCommandUpdateDB extends Thread{
 	private OrderLinkedList<TimerCommand> queue;
 	public TimerCommandUpdateDB(OrderLinkedList<TimerCommand> queue){
 		this.queue = queue;
-		logger.setLevel(Level.DEBUG);
+		logger.setLevel(Level.INFO);
 	}
 	final static Logger logger = Logger.getLogger(TimerCommandUpdateDB.class);
 	@Override

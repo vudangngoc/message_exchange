@@ -1,5 +1,6 @@
 package com.creative.server;
 
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ResourceBundle;
@@ -38,7 +39,7 @@ public class TCPServer {
     redisConfig.setTestOnCreate(false);
     redisConfig.setTestOnReturn(false);
     redisConfig.setMaxTotal(128);
-    redisPool = new JedisPool(redisConfig, rb.getString("redis.server"), Integer.parseInt(rb.getString("redis.port")));
+    redisPool = new JedisPool(redisConfig, rb.getString("redis.server"), Integer.parseInt(rb.getString("redis.port")),500,rb.getString("redis.password"));
   }
   public static JedisPool redisPool;
 
@@ -53,7 +54,8 @@ public class TCPServer {
 		ClientHandler handler = new ClientHandler();
     try {
       @SuppressWarnings("resource")
-      ServerSocket listenSocket = new ServerSocket(Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.PORT)));
+      InetAddress addr = InetAddress.getByName("127.0.0.1");
+      ServerSocket listenSocket = new ServerSocket(Integer.parseInt(GlobalConfig.getConfig(GlobalConfig.PORT)),50,addr);
       logger.info("Start server at port:" + GlobalConfig.getConfig(GlobalConfig.PORT));
       while(true){
         Socket clientSocket = listenSocket.accept();

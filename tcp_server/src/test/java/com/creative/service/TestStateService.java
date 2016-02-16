@@ -22,7 +22,7 @@ public class TestStateService extends ServiceTest {
 		System.out.println("Init TestStateService");
 
 		StateService service = new StateService();
-		service.redisPool  = new JedisPool(new JedisPoolConfig(), "127.0.0.1", 11502);
+		service.setRedisPool(new JedisPool(new JedisPoolConfig(), "127.0.0.1",11502,500,"e1VCUnspDFRM"));
 		disrupt.injectServices(service);
 		disrupt.startDisruptor();
 

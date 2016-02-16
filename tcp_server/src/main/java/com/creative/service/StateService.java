@@ -13,6 +13,7 @@ import com.creative.disruptor.DisruptorEvent;
 import com.creative.server.TCPServer;
 
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -20,13 +21,26 @@ import org.apache.log4j.Logger;
 public class StateService implements GeneralService {
   public StateService(){
   	logger.setLevel(Level.INFO);
+  	if(TCPServer.redisPool != null && !TCPServer.redisPool.isClosed())
+  		this.redisPool = TCPServer.redisPool;
+  	try{
+  	if(this.redisPool != null)
+  		this.messageList = new RedisHashMap(redisPool.getResource(),"StateService");
+  	} catch(JedisConnectionException e){
+  		logger.debug("Cannot connect to Redis server");
+  	}
   }
 
   public static final String DATA = "DATA";
   final static Logger logger = Logger.getLogger(StateService.class);
-  public JedisPool redisPool = TCPServer.redisPool;
-  private RedisHashMap messageList = new RedisHashMap(redisPool.getResource(),"StateService");
+  private JedisPool redisPool;
+  private RedisHashMap messageList;
 
+  public void setRedisPool(JedisPool pool){
+  	if(pool == null) return;
+  	this.redisPool = pool;
+  	this.messageList = new RedisHashMap(redisPool.getResource(),"StateService");
+  }
   public boolean canHandle(String command) {
     if(command == null || "".equals(command)) return false;
     return command.startsWith("STATE_");
